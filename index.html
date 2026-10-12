@@ -433,6 +433,7 @@
       cursor: pointer;
       opacity: 0.7;
       transition: opacity 0.3s ease;
+      touch-action: manipulation;
     }
 
     .tl-arrow+.tl-arrow {
@@ -489,7 +490,7 @@
     .quote {
       grid-area: 1 / 1;
       opacity: 0;
-      transition: opacity 1.2s ease-in-out;
+      transition: opacity 0.25s ease;
       pointer-events: none;
     }
 
@@ -501,7 +502,7 @@
     .quote-arrows {
       display: flex;
       gap: 0.5rem;
-      margin-bottom: clamp(1rem, 3vh, 2rem);
+      margin-top: clamp(1.5rem, 3vh, 2.5rem);
     }
 
     .quote blockquote {
@@ -528,7 +529,8 @@
       letter-spacing: 0.04em;
     }
 
-    .contact-info a {
+    .contact-info a,
+    .contact-info span {
       color: var(--color-ink);
       text-decoration: none;
       white-space: nowrap;
@@ -643,7 +645,7 @@
       }
 
       .brand {
-        font-size: 2.6rem;
+        font-size: 2.3rem;
       }
 
       /* kuvaukset rivittyvät tekstikappaleen leveyteen eivätkä jää näkymättömiin */
@@ -659,6 +661,21 @@
       .contact {
         flex-direction: column;
         gap: 0.25rem;
+      }
+
+      /* Yhteystiedot aina allekkain riippumatta sisällön pituudesta */
+      .contact-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+
+      .contact-info span,
+      .contact-info a {
+        display: block;
+        width: 100%;
+        white-space: normal;
       }
     }
   </style>
@@ -728,10 +745,6 @@
 
   <section class="block" id="tekosia" aria-labelledby="tekosia-h">
     <h2 id="tekosia-h">Tekosia</h2>
-    <div class="quote-arrows">
-      <button type="button" class="tl-arrow" id="quotePrev" aria-label="Edellinen sitaatti">←</button>
-      <button type="button" class="tl-arrow" id="quoteNext" aria-label="Seuraava sitaatti">→</button>
-    </div>
     <div class="quotes">
       <figure class="quote is-active">
         <blockquote>Huipputason musiikillisen ja pedagogisen osaamisen varaan rakentunut
@@ -813,11 +826,16 @@
         <figcaption>Unfold Finlayson, 2019–2026</figcaption>
       </figure>
     </div>
+    <div class="quote-arrows">
+      <button type="button" class="tl-arrow" id="quotePrev" aria-label="Edellinen sitaatti">←</button>
+      <button type="button" class="tl-arrow" id="quoteNext" aria-label="Seuraava sitaatti">→</button>
+    </div>
   </section>
 
   <section class="block" id="kontakti" aria-labelledby="kontakti-h">
     <h2 id="kontakti-h">Kontakti</h2>
-    <p class="contact-info">Henrik Lindström
+    <p class="contact-info">
+      <span>Henrik Lindström</span>
       <a href="tel:+358403515553">040 3515 553</a>
       <a href="mailto:imago@laaki.fi">imago@laaki.fi</a>
     </p>
@@ -842,26 +860,15 @@
   </div>
 
   <script>
+    // Aikajana: itsenäinen sivusuuntainen navigaatio nuolilla, täysin irti sivun vierityksestä
     (function () {
       const lead = document.getElementById('lead');
       const line = document.querySelector('.timeline-line');
       const items = [...document.querySelectorAll('#track .tl-item')];
       const labels = items.map(i => i.querySelector('.tl-label'));
       const n = items.length;
-      let gap, fade, left, right, raw = 0, target = 0, pos = 0, raf = null;
-
-      // Pysähdys: jokaisen kohdan ympärillä on tasanne, jossa aikajana pysyy paikallaan
-      // vaikka vieritys jatkuu tasaisesti. Tasanteiden välillä liike on pehmeä.
-      const DWELL = 0.3; // tasanteen osuus kummallakin puolella (0–0.5)
-      function withDwell(r) {
-        const i = Math.floor(r), f = r - i;
-        if (f <= DWELL) return i;
-        if (f >= 1 - DWELL) return i + 1;
-        const t = (f - DWELL) / (1 - 2 * DWELL);
-        return i + t * t * (3 - 2 * t);
-      }
+      let gap, fade, left, right, target = 0, pos = 0, raf = null;
       const MIN_OPACITY = 0.15; // fokuksen ulkopuolisten osioiden näkyvyys
-      const PX_PER_STEP = 500; // vierityspikseleitä yhtä pallovälia kohti
 
       function measure() {
         const r = lead.getBoundingClientRect();
@@ -869,7 +876,6 @@
         right = r.right;
         fade = r.width * 0.2;
         gap = r.width * 1.3; // yksi teksti kerrallaan näkyvissä
-        // viiva jatkuu viimeisen pallon jälkeen aina ruudun reunan yli
         line.style.width = ((n - 1) * gap + window.innerWidth) + 'px';
         render();
       }
@@ -879,7 +885,6 @@
         items.forEach((el, i) => {
           const x = left + (i - pos) * gap;
           el.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
-          // teksti näkyy koko kappaleen leveyden ajan, häipyy reunoilla
           const maxX = Math.max(left, right - labels[i].offsetWidth);
           let o = 1;
           if (x > maxX) o = 1 - (x - maxX) / fade;
@@ -895,65 +900,24 @@
         render();
       }
 
-      // Aikajanan nuolet (aina näkyvissä aikajanan yläpuolella)
+      // Nuolinavigaatio aikajanalle
       const prevBtn = document.getElementById('tlPrev');
       const nextBtn = document.getElementById('tlNext');
       function stepTo(i) {
-        raw = target = i;
+        target = i;
         if (!raf) raf = requestAnimationFrame(tick);
         updateArrows();
       }
       function updateArrows() {
-        prevBtn.classList.toggle('is-disabled', Math.round(target) <= 0);
+        prevBtn.classList.toggle('is-disabled', target <= 0);
       }
       prevBtn.addEventListener('click', () => {
-        const i = Math.round(target);
-        if (i > 0) stepTo(i - 1);
+        if (target > 0) stepTo(target - 1);
       });
       nextBtn.addEventListener('click', () => {
-        const i = Math.round(target);
         // viimeisellä kohdalla siirrytään seuraavaan osioon
-        if (i >= n - 1) document.getElementById('tekosia').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        else stepTo(i + 1);
-      });
-
-      function scrollBy(px) {
-        raw = Math.min(n - 1, Math.max(0, raw + px / PX_PER_STEP));
-        target = withDwell(raw);
-        updateArrows();
-        if (!raf) raf = requestAnimationFrame(tick);
-      }
-
-      // Aikajana kaappaa vierityksen vain sivun yläreunassa ja vain niin kauan kuin sillä on liikuttavaa.
-      // Kun se on päässään, vieritys jatkuu normaalisti alempiin osioihin.
-      function captures(dir) {
-        if (window.scrollY > 2) return false;
-        return dir > 0 ? raw < n - 1 : raw > 0;
-      }
-
-      window.addEventListener('wheel', e => {
-        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-        if (!d || !captures(Math.sign(d))) return;
-        e.preventDefault();
-        scrollBy(d);
-      }, { passive: false });
-
-      let touchY = null;
-      window.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
-      window.addEventListener('touchmove', e => {
-        if (touchY === null) return;
-        const y = e.touches[0].clientY;
-        const d = (touchY - y) * 1.5;
-        touchY = y;
-        if (!d || !captures(Math.sign(d))) return;
-        e.preventDefault();
-        scrollBy(d);
-      }, { passive: false });
-
-      window.addEventListener('keydown', e => {
-        if (e.target.closest('input, textarea, select, button')) return;
-        const k = { ArrowDown: 1, ArrowRight: 1, PageDown: 1, ' ': 1, ArrowUp: -1, ArrowLeft: -1, PageUp: -1 }[e.key];
-        if (k && captures(k)) { e.preventDefault(); scrollBy(k * PX_PER_STEP); }
+        if (target >= n - 1) document.getElementById('tekosia').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else stepTo(target + 1);
       });
 
       window.addEventListener('resize', measure);
@@ -961,22 +925,16 @@
       measure();
     })();
 
-    // Referenssit: sivusuuntainen navigaatio, ei automaattista vaihtoa.
-    // Vanha sitaatti feidautuu kokonaan pois ennen kuin uusi feidautuu sisään (ei päällekkäisyyttä).
+    // Referenssit: välitön siirtymä ilman viivettä
     (function () {
       const quotes = [...document.querySelectorAll('.quote')];
-      const FADE_MS = 1200; // sama kuin .quote:n transition CSS:ssä
-      let current = 0, busy = false;
+      let current = 0;
 
       function show(next) {
-        if (busy || next === current) return;
-        busy = true;
+        if (next === current) return;
         quotes[current].classList.remove('is-active');
-        setTimeout(() => {
-          current = next;
-          quotes[current].classList.add('is-active');
-          setTimeout(() => { busy = false; }, FADE_MS);
-        }, FADE_MS);
+        current = next;
+        quotes[current].classList.add('is-active');
       }
 
       document.getElementById('quotePrev').addEventListener('click', () => show((current - 1 + quotes.length) % quotes.length));
