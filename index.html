@@ -489,15 +489,19 @@
     .quote {
       grid-area: 1 / 1;
       opacity: 0;
-      transition: opacity 1.8s ease-in-out;
+      transition: opacity 1.2s ease-in-out;
       pointer-events: none;
     }
 
     .quote.is-active {
       opacity: 1;
       pointer-events: auto;
-      /* feidaus alkaa vasta kun edellinen on kadonnut (1.8 s) + 0.5 s katve */
-      transition-delay: 1.8s;
+    }
+
+    .quote-arrows {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: clamp(1rem, 3vh, 2rem);
     }
 
     .quote blockquote {
@@ -603,7 +607,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .quote {
-        transition-duration: 0.01s;
+        transition-duration: 0.5s;
       }
     }
 
@@ -622,6 +626,24 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.65rem;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .brand {
+        font-size: 2.6rem;
+      }
+
+      /* kuvaukset rivittyvät tekstikappaleen leveyteen eivätkä jää näkymättömiin */
+      .tl-label {
+        white-space: normal;
+        width: calc(100vw - 2 * clamp(1.5rem, 6vw, 6rem));
+      }
+
+      .timeline {
+        height: 13rem;
       }
 
       .contact {
@@ -695,7 +717,11 @@
   </section>
 
   <section class="block" id="tekosia" aria-labelledby="tekosia-h">
-    <h2 id="kontakti-h">Tekosia</h2>
+    <h2 id="tekosia-h">Tekosia</h2>
+    <div class="quote-arrows">
+      <button type="button" class="tl-arrow" id="quotePrev" aria-label="Edellinen sitaatti">←</button>
+      <button type="button" class="tl-arrow" id="quoteNext" aria-label="Seuraava sitaatti">→</button>
+    </div>
     <div class="quotes">
       <figure class="quote is-active">
         <blockquote>Huipputason musiikillisen ja pedagogisen osaamisen varaan rakentunut
@@ -925,16 +951,26 @@
       measure();
     })();
 
-    // Referenssit: yksi sitaatti kerrallaan, vaihtuu 5 s välein hitaasti feidaten
+    // Referenssit: sivusuuntainen navigaatio, ei automaattista vaihtoa.
+    // Vanha sitaatti feidautuu kokonaan pois ennen kuin uusi feidautuu sisään (ei päällekkäisyyttä).
     (function () {
       const quotes = [...document.querySelectorAll('.quote')];
-      let current = 0;
-      setInterval(() => {
+      const FADE_MS = 1200; // sama kuin .quote:n transition CSS:ssä
+      let current = 0, busy = false;
+
+      function show(next) {
+        if (busy || next === current) return;
+        busy = true;
         quotes[current].classList.remove('is-active');
-        current = (current + 1) % quotes.length;
-        quotes[current].classList.add('is-active');
-        // 1.8 s ulosfeidaus + 1.8 s sisäänfeidaus (viive 1.8 s CSS:ssä) + 7 s näkyvissä
-      }, 10600);
+        setTimeout(() => {
+          current = next;
+          quotes[current].classList.add('is-active');
+          setTimeout(() => { busy = false; }, FADE_MS);
+        }, FADE_MS);
+      }
+
+      document.getElementById('quotePrev').addEventListener('click', () => show((current - 1 + quotes.length) % quotes.length));
+      document.getElementById('quoteNext').addEventListener('click', () => show((current + 1) % quotes.length));
     })();
 
     // Osionavigaatio: nuolet edelliseen ja seuraavaan osioon
