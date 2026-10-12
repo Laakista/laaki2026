@@ -165,6 +165,51 @@
       }
     }
 
+    /* --- OSIONAVIGAATIO: kaksi nuolta, aina oikeassa yläkulmassa --- */
+    .section-nav {
+      position: fixed;
+      top: clamp(1rem, 2.2vw, 2.4rem);
+      right: clamp(1rem, 2.2vw, 2.4rem);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-arrow {
+      appearance: none;
+      background: none;
+      border: none;
+      width: 2.75rem;
+      height: 2.75rem;
+      max-height: 2.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: var(--font-body);
+      font-size: 1.9rem;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--color-ink);
+      opacity: 0.6;
+      cursor: pointer;
+      transition: opacity 0.35s ease, max-height 0.4s ease;
+    }
+
+    .nav-arrow:hover,
+    .nav-arrow:focus-visible {
+      opacity: 1;
+      outline: none;
+    }
+
+    /* piilotettu nuoli feidautuu pois ja kutistuu, jolloin toinen nuoli liukuu paikalleen */
+    .nav-arrow.is-hidden {
+      opacity: 0;
+      max-height: 0;
+      pointer-events: none;
+    }
+
     /* --- YLÄPALKKI --- */
     header {
       position: absolute;
@@ -292,7 +337,7 @@
       position: relative;
       width: 100%;
       height: 9rem;
-      margin-top: clamp(4rem, 14vh, 9rem);
+      margin-top: clamp(1.5rem, 5vh, 3.5rem);
     }
 
     .timeline-line {
@@ -360,35 +405,49 @@
       color: var(--color-ink);
     }
 
-    .tl-next {
+    .timeline-arrows {
+      width: 100%;
+      max-width: 1200px;
+      margin: clamp(1.5rem, 4vh, 2.5rem) auto 0;
+      padding: 0 clamp(1.5rem, 6vw, 6rem);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .tl-arrow {
       appearance: none;
       background: none;
       border: none;
-      padding: 0 0.8rem 0 0;
+      width: 3.25rem;
+      height: 3.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -0.75rem;
+      /* nuolen reuna linjaan tekstin kanssa */
       font-family: var(--font-body);
       font-size: 2.6rem;
       font-weight: 300;
       line-height: 1;
-      height: 1.68rem;
-      /* sama kuin otsikkorivin korkeus */
-      display: flex;
-      align-items: center;
       color: var(--color-ink-faint);
       cursor: pointer;
-      pointer-events: none;
-      opacity: 0.5;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
     }
 
-    /* Takaisinkelaus-merkki istuu fontissa matalammalla kuin nuoli */
-    .tl-next.tl-rewind {
-      translate: 0 -0.1em;
+    .tl-arrow+.tl-arrow {
+      margin-left: 0;
     }
 
-    .tl-next:hover,
-    .tl-next:focus-visible {
+    .tl-arrow:hover,
+    .tl-arrow:focus-visible {
       opacity: 1;
       outline: none;
+    }
+
+    .tl-arrow.is-disabled {
+      opacity: 0.15;
+      pointer-events: none;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -584,9 +643,9 @@
 
   <header>
     <div class="brand">Laaki</div>
-    <nav class="contact" aria-label="Sivun osiot">
-      <a href="#tekosia">Tekosia</a>
-      <a href="#kontakti">Kontakti</a>
+    <nav class="section-nav" aria-label="Sivun osiot">
+      <button type="button" class="nav-arrow" id="navUp" aria-label="Edellinen osio">↑</button>
+      <button type="button" class="nav-arrow" id="navDown" aria-label="Seuraava osio">↓</button>
     </nav>
   </header>
 
@@ -600,6 +659,10 @@
           kunnon haaste.
         </p>
       </main>
+      <div class="timeline-arrows">
+        <button type="button" class="tl-arrow is-disabled" id="tlPrev" aria-label="Edellinen kohta">←</button>
+        <button type="button" class="tl-arrow" id="tlNext" aria-label="Seuraava kohta">→</button>
+      </div>
       <div class="timeline" aria-label="Palvelun vaiheet">
         <div class="timeline-line"></div>
         <ol class="timeline-track" id="track">
@@ -632,6 +695,7 @@
   </section>
 
   <section class="block" id="tekosia" aria-labelledby="tekosia-h">
+    <h2 id="kontakti-h">Tekosia</h2>
     <div class="quotes">
       <figure class="quote is-active">
         <blockquote>Huipputason musiikillisen ja pedagogisen osaamisen varaan rakentunut
@@ -786,7 +850,6 @@
           else if (x < left) o = 1 - (left - x) / fade;
           const op = Math.min(1, Math.max(MIN_OPACITY, o));
           labels[i].style.opacity = op.toFixed(3);
-          labels[i].querySelector('.tl-next').style.pointerEvents = op > 0.6 ? 'auto' : 'none';
         });
       }
 
@@ -796,24 +859,32 @@
         render();
       }
 
-      // nuoli jokaisen osion loppuun; viimeisessä takaisinkelaus
-      items.forEach((el, i) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        const last = i === n - 1;
-        btn.className = last ? 'tl-next tl-rewind' : 'tl-next';
-        btn.textContent = last ? '«' : '→';
-        btn.setAttribute('aria-label', last ? 'Takaisin alkuun' : 'Seuraava vaihe');
-        btn.addEventListener('click', () => {
-          raw = target = last ? 0 : i + 1;
-          if (!raf) raf = requestAnimationFrame(tick);
-        });
-        labels[i].prepend(btn);
+      // Aikajanan nuolet (aina näkyvissä aikajanan yläpuolella)
+      const prevBtn = document.getElementById('tlPrev');
+      const nextBtn = document.getElementById('tlNext');
+      function stepTo(i) {
+        raw = target = i;
+        if (!raf) raf = requestAnimationFrame(tick);
+        updateArrows();
+      }
+      function updateArrows() {
+        prevBtn.classList.toggle('is-disabled', Math.round(target) <= 0);
+      }
+      prevBtn.addEventListener('click', () => {
+        const i = Math.round(target);
+        if (i > 0) stepTo(i - 1);
+      });
+      nextBtn.addEventListener('click', () => {
+        const i = Math.round(target);
+        // viimeisellä kohdalla siirrytään seuraavaan osioon
+        if (i >= n - 1) document.getElementById('tekosia').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else stepTo(i + 1);
       });
 
       function scrollBy(px) {
         raw = Math.min(n - 1, Math.max(0, raw + px / PX_PER_STEP));
         target = withDwell(raw);
+        updateArrows();
         if (!raf) raf = requestAnimationFrame(tick);
       }
 
@@ -864,6 +935,40 @@
         quotes[current].classList.add('is-active');
         // 1.8 s ulosfeidaus + 1.8 s sisäänfeidaus (viive 1.8 s CSS:ssä) + 7 s näkyvissä
       }, 10600);
+    })();
+
+    // Osionavigaatio: nuolet edelliseen ja seuraavaan osioon
+    (function () {
+      const sections = ['stage', 'tekosia', 'kontakti'].map(id => document.getElementById(id));
+      const up = document.getElementById('navUp');
+      const down = document.getElementById('navDown');
+
+      function current() {
+        let idx = 0;
+        sections.forEach((s, i) => { if (s.getBoundingClientRect().top <= window.innerHeight * 0.4) idx = i; });
+        // sivun aivan alalaidassa viimeinen osio on aina nykyinen
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = sections.length - 1;
+        return idx;
+      }
+
+      function goTo(i) {
+        if (i <= 0) window.scrollTo({ top: 0, behavior: 'smooth' });
+        else sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function update() {
+        const i = current();
+        up.classList.toggle('is-hidden', i === 0);
+        down.classList.toggle('is-hidden', i === sections.length - 1);
+        up.tabIndex = i === 0 ? -1 : 0;
+        down.tabIndex = i === sections.length - 1 ? -1 : 0;
+      }
+
+      up.addEventListener('click', () => goTo(Math.max(0, current() - 1)));
+      down.addEventListener('click', () => goTo(Math.min(sections.length - 1, current() + 1)));
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
     })();
 
     // Yhteydenottolomake: avaa käyttäjän sähköpostiohjelman valmiiksi täytetyllä viestillä
