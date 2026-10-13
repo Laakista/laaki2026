@@ -21,9 +21,9 @@
             --color-paper: #000000;
             --color-paper-warm: #080a0a;
             --color-paper-shadow: #060a10;
-            --color-ink: #e1c8b9;
-            --color-ink-faint: #a8764b;
-            --color-blue: #6d6358;
+            --color-ink: #fbe9de;
+            --color-ink-faint: #fc8641;
+            --color-blue: #916a5a;
             --font-heading: 'Aboreto', serif;
             --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
@@ -72,10 +72,10 @@
             pointer-events: none;
             z-index: 0;
             background: radial-gradient(circle at 35% 25%,
-                    rgba(77, 45, 23, 0.5) 0%,
-                    rgba(6, 13, 31, 0.6) 45%,
-                    rgba(6, 25, 39, 0.85) 85%,
-                    rgba(5, 6, 9, 0.6) 100%);
+                    rgba(14, 13, 13, 0.632) 0%,
+                    rgba(10, 9, 8, 0.6) 45%,
+                    rgba(20, 16, 13, 0.85) 85%,
+                    rgba(0, 0, 0, 0.627) 100%);
             filter: blur(40px);
             animation: daylightDrift 28s ease-in-out infinite alternate;
             will-change: transform;
@@ -100,7 +100,7 @@
             inset: 0;
             pointer-events: none;
             z-index: 0;
-            background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(2, 5, 15, 0.8) 100%);
+            background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(60, 32, 13, 0.4) 100%);
         }
 
         /* --- 2. PERGOLAN PAKSUT MONITASOISET PARALLAX-VARJOT --- */
@@ -155,25 +155,25 @@
         .p1-bar {
             height: 520px;
             margin-bottom: 540px;
-            background: rgba(22, 34, 46, 0.2);
+            background: rgba(29, 17, 6, 0.442);
         }
 
         .p2-bar {
             height: 360px;
             margin-bottom: 400px;
-            background: rgba(15, 19, 21, 0.291);
+            background: rgba(37, 26, 16, 0.626);
         }
 
         .p3-bar {
             height: 460px;
             margin-bottom: 720px;
-            background: rgba(21, 51, 59, 0.297);
+            background: rgba(23, 11, 5, 0.594);
         }
 
         .p4-bar {
             height: 280px;
             margin-bottom: 660px;
-            background: rgba(23, 24, 24, 0.193);
+            background: rgba(108, 49, 7, 0.638);
         }
 
         /* --- 3. AURINGONVALON SATUNNAISET PÖLYHIUKKASET (SUNLIGHT DUST MOTES) --- */
@@ -777,7 +777,7 @@
         .contact-form input,
         .contact-form textarea {
             width: 100%;
-            background: rgba(5, 10, 22, 0.25);
+            background: rgba(0, 0, 0, 0.15);
             border: 0px solid rgba(0, 0, 0, 0.28);
             border-radius: 0;
             padding: 0.9rem 1rem;
@@ -800,15 +800,15 @@
         .contact-form input:focus,
         .contact-form textarea:focus {
             outline: none;
-            background: rgba(3, 209, 255, 0.076);
+            background: rgba(255, 79, 3, 0.076);
         }
 
         .form-submit {
             grid-column: 1 / -1;
             justify-self: start;
             appearance: none;
-            background: rgba(5, 6, 32, 0.158);
-            border: 0px solid var(--color-ink-faint);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0);
             margin-top: 2rem;
             padding: 0.8rem 1.8rem;
             font: inherit;
@@ -822,8 +822,7 @@
         .form-submit:hover,
         .form-submit:focus-visible {
             outline: none;
-            background: var(--color-ink-faint);
-            color: var(--color-paper);
+            border: 1px solid var(--color-ink-faint);
         }
 
         @media (max-width: 640px) {
@@ -1122,7 +1121,7 @@
                 <figcaption>Sofiakylä, syksy 2019</figcaption>
             </figure>
             <figure class="quote">
-                <blockquote>Myyntihommat elämystuotantoon vaihtaneen yrittäjän konsepti ja brändi puhallettiin henkiin
+                <blockquote>Toimistohommat elämystuotantoon vaihtaneen yrittäjän konsepti ja brändi puhallettiin henkiin
                     Laakin toimistolla. Toiminta kasvoi tasaisesti kaupungin tunnetuimmaksi virkistyspäivien
                     järjestäjäksi ja
                     suunta on yhä ylöspäin.
