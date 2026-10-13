@@ -2,996 +2,1607 @@
 <html lang="fi">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laaki — Kerralla kunnolla</title>
-  <meta name="description"
-    content="Sitä saa mitä tilaa. Laakista saat apua kun olet hankkimassa sovellusta tai verkkototeutusta.">
-
-  <!-- Google Fonts: Aboreto & Raleway -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Aboreto&family=Raleway:ital,wght@0,300;0,400;1,300&display=swap"
-    rel="stylesheet">
-
-  <style>
-    :root {
-      --color-paper: #0a0f12;
-      --color-ink: #f7e9e0;
-      --color-ink-faint: #967a38;
-      --font-heading: 'Aboreto', serif;
-      --font-body: 'Raleway', sans-serif;
-    }
-
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      min-height: 100%;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--color-paper);
-      color: var(--color-ink);
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      letter-spacing: 0.02em;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* --- ELÄVÄ ORGAANINEN TAUSTAEFEKTI (SELKEÄSTI KOROSTETTU) --- */
-    .ambient-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(65px);
-      opacity: 0.72;
-      will-change: transform;
-      mix-blend-mode: multiply;
-    }
-
-    /* Korostettu lämmin kultainen okra / keltainen */
-    .blob-amber {
-      width: clamp(420px, 55vw, 850px);
-      height: clamp(420px, 55vw, 850px);
-      top: -12%;
-      right: -8%;
-      background: radial-gradient(circle, rgba(131, 91, 16, 0.78) 0%, rgba(64, 44, 13, 0.28) 55%, transparent 75%);
-      animation: drift-amber 11s ease-in-out infinite alternate;
-    }
-
-    /* Korostettu lämmin terrakotta / punertava savi */
-    .blob-terracotta {
-      width: clamp(380px, 50vw, 800px);
-      height: clamp(380px, 50vw, 800px);
-      bottom: -12%;
-      left: -8%;
-      background: radial-gradient(circle, rgba(23, 76, 96, 0.72) 0%, rgba(27, 51, 93, 0.22) 55%, transparent 75%);
-      animation: drift-terracotta 13s ease-in-out infinite alternate;
-    }
-
-    /* Kolmas lämmin sävy: hehkuva persikka / aprikoosi keskellä */
-    .blob-warm {
-      width: clamp(360px, 45vw, 700px);
-      height: clamp(360px, 45vw, 700px);
-      top: 30%;
-      left: 25%;
-      background: radial-gradient(circle, rgba(153, 86, 34, 0.65) 0%, rgba(95, 48, 30, 0.18) 55%, transparent 75%);
-      animation: drift-warm 10s ease-in-out infinite alternate;
-    }
-
-    /* Aito paperin kuitu ja mikrorakeisuus */
-    .paper-grain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.045;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-    /* Liikeradat ovat nyt huomattavasti laajemmat ja nopeammat (n. 10–13 sekuntia) */
-    @keyframes drift-amber {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-
-      50% {
-        transform: translate(-26%, 22%) scale(1.18);
-      }
-
-      100% {
-        transform: translate(-38%, 10%) scale(0.88);
-      }
-    }
-
-    @keyframes drift-terracotta {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-
-      50% {
-        transform: translate(26%, -24%) scale(1.2);
-      }
-
-      100% {
-        transform: translate(14%, -36%) scale(0.86);
-      }
-    }
-
-    @keyframes drift-warm {
-      0% {
-        transform: translate(0, 0) scale(0.9);
-      }
-
-      50% {
-        transform: translate(-20%, -18%) scale(1.25);
-      }
-
-      100% {
-        transform: translate(22%, 16%) scale(0.95);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .blob {
-        animation: none;
-      }
-    }
-
-    /* --- OSIONAVIGAATIO: kaksi nuolta, aina oikeassa yläkulmassa --- */
-    .section-nav {
-      position: fixed;
-      top: clamp(1rem, 2.2vw, 2.4rem);
-      right: clamp(1rem, 2.2vw, 2.4rem);
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .nav-arrow {
-      appearance: none;
-      background: none;
-      border: none;
-      width: 2.75rem;
-      height: 2.75rem;
-      max-height: 2.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      font-family: var(--font-body);
-      font-size: 1.9rem;
-      font-weight: 300;
-      line-height: 1;
-      color: var(--color-ink);
-      opacity: 0.6;
-      cursor: pointer;
-      transition: opacity 0.35s ease, max-height 0.4s ease;
-    }
-
-    .nav-arrow:hover,
-    .nav-arrow:focus-visible {
-      opacity: 1;
-      outline: none;
-    }
-
-    /* piilotettu nuoli feidautuu pois ja kutistuu, jolloin toinen nuoli liukuu paikalleen */
-    .nav-arrow.is-hidden {
-      opacity: 0;
-      max-height: 0;
-      pointer-events: none;
-    }
-
-    /* --- YLÄPALKKI --- */
-    header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 2;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1.5rem;
-      padding-top: clamp(1rem, 2.2vw, 2.4rem);
-      padding-bottom: 0;
-      padding-left: clamp(1rem, 2.2vw, 2.4rem);
-      padding-right: clamp(1rem, 2.2vw, 2.4rem);
-    }
-
-    .brand {
-      font-family: var(--font-heading);
-      font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--color-ink-faint);
-      text-decoration: none;
-    }
-
-    .contact {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.75rem 2rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.04em;
-    }
-
-    .contact a {
-      color: var(--color-ink);
-      text-decoration: none;
-      transition: opacity 0.2s ease;
-      opacity: 0.88;
-      white-space: nowrap;
-    }
-
-    .contact a:hover {
-      opacity: 1;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      text-decoration-thickness: 1px;
-    }
-
-    /* --- SISÄLTÖALUE --- */
-    .content-area {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 clamp(1.5rem, 6vw, 6rem);
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-
-    main {
-      padding: clamp(3.5rem, 12vh, 8rem) 0;
-      max-width: 820px;
-    }
-
-    h1 {
-      font-family: var(--font-heading);
-      font-size: 3.5rem;
-      line-height: 1.18;
-      letter-spacing: 0.06em;
-      font-weight: 400;
-      color: var(--color-ink);
-      margin-bottom: clamp(1.8rem, 3.5vw, 2.8rem);
-      text-wrap: balance;
-    }
-
-    .lead {
-      font-size: 1.2em;
-      line-height: 1.75;
-      font-weight: 300;
-      color: var(--color-ink);
-      letter-spacing: 0.025em;
-      max-width: 900px;
-    }
-
-    /* --- VAAKA-AIKAJANA (vieritys ohjaa liikettä) --- */
-    /* Sivu vierittyy normaalisti; ylin näkymä on täyden ruudun korkuinen
-       ja aikajana kaappaa vierityksen vain sen ollessa päällä */
-    .stage {
-      position: relative;
-      z-index: 1;
-      height: 100vh;
-      height: 100svh;
-      flex-shrink: 0;
-      display: flex;
-    }
-
-    .stage-inner {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-top: clamp(4rem, 14vh, 10rem);
-      overflow: hidden;
-      touch-action: pan-y;
-    }
-
-    .stage-inner main {
-      padding: 0;
-      margin: 0 auto;
-      width: 100%;
-      max-width: 1200px;
-      padding: 0 clamp(1.5rem, 6vw, 6rem);
-    }
-
-    .stage-inner main .lead {
-      max-width: 720px;
-    }
-
-    .timeline {
-      position: relative;
-      width: 100%;
-      height: 6rem;
-      margin-top: clamp(1.5rem, 5vh, 3.5rem);
-    }
-
-    .timeline-line {
-      position: absolute;
-      left: 0;
-      top: calc(0.325rem - 1px);
-      width: 100vw;
-      height: 2px;
-      background: var(--color-ink-faint);
-      opacity: 0.35;
-      will-change: transform;
-    }
-
-    .timeline-track {
-      position: absolute;
-      inset: 0;
-      list-style: none;
-    }
-
-    .tl-item {
-      position: absolute;
-      top: 0;
-      left: 0;
-      will-change: transform;
-    }
-
-    .tl-dot {
-      display: block;
-      width: 0.65rem;
-      height: 0.65rem;
-      border-radius: 50%;
-      background: var(--color-ink-faint);
-    }
-
-    .tl-label {
-      position: absolute;
-      top: 2.5rem;
-      left: 0;
-      white-space: nowrap;
-      font-size: 1.2rem;
-      font-weight: 600;
-      line-height: 1.4;
-      letter-spacing: 0.025em;
-      opacity: 0;
-      will-change: opacity;
-      display: flex;
-      align-items: flex-start;
-      color: var(--color-ink-faint);
-    }
-
-    .tl-text {
-      display: block;
-    }
-
-    .tl-title {
-      display: block;
-    }
-
-    .tl-desc {
-      display: block;
-      margin-top: 0.15rem;
-      font-size: 0.95rem;
-      font-weight: 300;
-      line-height: 1.5;
-      letter-spacing: 0.03em;
-      color: var(--color-ink);
-    }
-
-    .timeline-arrows {
-      width: 100%;
-      max-width: 1200px;
-      margin: clamp(1.5rem, 4vh, 2.5rem) auto 0;
-      padding: 0 clamp(1.5rem, 6vw, 6rem);
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .tl-arrow {
-      appearance: none;
-      background: none;
-      border: none;
-      width: 3.25rem;
-      height: 3.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: -0.75rem;
-      /* nuolen reuna linjaan tekstin kanssa */
-      font-family: var(--font-body);
-      font-size: 2.6rem;
-      font-weight: 300;
-      line-height: 1;
-      color: var(--color-ink-faint);
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-      touch-action: manipulation;
-    }
-
-    .tl-arrow+.tl-arrow {
-      margin-left: 0;
-    }
-
-    .tl-arrow:hover,
-    .tl-arrow:focus-visible {
-      opacity: 1;
-      outline: none;
-    }
-
-    .tl-arrow.is-disabled {
-      opacity: 0.15;
-      pointer-events: none;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .tl-label {
-        transition: none;
-      }
-    }
-
-    footer {
-      padding: 2.5rem 0 clamp(1.5rem, 3vh, 2.5rem);
-      max-width: 720px;
-    }
-
-    /* --- ALAOSIOT --- */
-    .block {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: clamp(4rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem);
-    }
-
-    .block h2 {
-      font-family: var(--font-heading);
-      font-weight: 400;
-      font-size: 2rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--color-ink-faint);
-      margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
-    }
-
-    .quotes {
-      display: grid;
-      max-width: 900px;
-    }
-
-    .quote {
-      grid-area: 1 / 1;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-      pointer-events: none;
-    }
-
-    .quote.is-active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .quote-arrows {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: clamp(1.5rem, 3vh, 2.5rem);
-    }
-
-    .quote blockquote {
-      font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-      line-height: 1.5;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      color: var(--color-ink);
-    }
-
-    .quote figcaption {
-      margin-top: 1.2rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.06em;
-      color: var(--color-ink-faint);
-    }
-
-    .contact-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 2rem;
-      margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
-      font-size: 1.05rem;
-      letter-spacing: 0.04em;
-    }
-
-    .contact-info a,
-    .contact-info span {
-      color: var(--color-ink);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .contact-info a:hover {
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      text-decoration-thickness: 1px;
-    }
-
-    .contact-form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      max-width: 720px;
-    }
-
-    .contact-form input,
-    .contact-form textarea {
-      width: 100%;
-      background: rgba(163, 110, 25, 0.1);
-      border: 0px solid var(--color-ink-faint);
-      border-radius: 0;
-      padding: 0.9rem 1rem;
-      font: inherit;
-      font-size: 1rem;
-      color: var(--color-ink);
-      transition: border-color 0.2s ease;
-    }
-
-    .contact-form textarea {
-      grid-column: 1 / -1;
-      resize: vertical;
-    }
-
-    .contact-form ::placeholder {
-      color: var(--color-ink);
-      opacity: 0.5;
-    }
-
-    .contact-form input:focus,
-    .contact-form textarea:focus {
-      outline: none;
-      border-color: var(--color-ink);
-    }
-
-    .form-submit {
-      grid-column: 1 / -1;
-      justify-self: start;
-      appearance: none;
-      background: transparent;
-      border: 1px solid var(--color-ink-faint);
-      margin-top: 2rem;
-      padding: 0.8rem 1.8rem;
-      font: inherit;
-      font-size: 1rem;
-      letter-spacing: 0.08em;
-      color: var(--color-ink);
-      cursor: pointer;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
-    }
-
-    .form-submit:hover,
-    .form-submit:focus-visible {
-      outline: none;
-      border-color: var(--color-ink);
-      background: rgba(247, 233, 224, 0.07);
-    }
-
-    @media (max-width: 640px) {
-      .contact-form {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .quote {
-        transition-duration: 0.5s;
-      }
-    }
-
-    .disclaimer {
-      font-size: 0.88rem;
-      line-height: 1.7;
-      color: var(--color-ink);
-      letter-spacing: 0.03em;
-      font-weight: 300;
-      opacity: .5;
-    }
-
-    /* Mobiilinäkymä */
-    @media (max-width: 640px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.65rem;
-      }
-
-      .stage {
-        padding-top: clamp(4.5rem, 11vh, 6.5rem);
-      }
-
-      h1 {
-        font-size: 2.4rem;
-      }
-
-      .lead {
-        font-size: 1.1em;
-        line-height: 1.25;
-        font-weight: 300;
-      }
-
-      .brand {
-        font-size: 2rem;
-      }
-
-      /* kuvaukset rivittyvät tekstikappaleen leveyteen eivätkä jää näkymättömiin */
-      .tl-label {
-        white-space: normal;
-        width: calc(100vw - 2 * clamp(1.5rem, 6vw, 6rem));
-      }
-
-      .timeline {
-        height: 13rem;
-      }
-
-      .contact {
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-
-      /* Yhteystiedot aina allekkain riippumatta sisällön pituudesta */
-      .contact-info {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.6rem;
-      }
-
-      .contact-info span,
-      .contact-info a {
-        display: block;
-        width: 100%;
-        white-space: normal;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laaki — Kerralla kunnolla</title>
+    <meta name="description"
+        content="Sitä saa mitä tilaa. Laakista saat apua kun olet hankkimassa sovellusta tai verkkototeutusta.">
+
+    <!-- Google Fonts: Aboreto & Raleway -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Aboreto&family=Raleway:ital,wght@0,300;0,400;1,300&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Lämmin, luonnollinen paperipaletti */
+            --color-paper: #001a20;
+            --color-paper-warm: #0d3e21;
+            --color-paper-shadow: #1d4317;
+            --color-ink: #fadecc;
+            --color-ink-faint: #ffa34d;
+            --font-heading: 'Aboreto', serif;
+            --font-body: 'Raleway', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-paper);
+            color: var(--color-ink);
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- 1. LUONNONVALO JA ATELJEEN TAUSTASYVYYS --- */
+        .ambient-daylight {
+            position: fixed;
+            inset: -10vw;
+            width: 120vw;
+            height: 120vh;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(circle at 35% 25%,
+                    rgba(252, 114, 1, 0.5) 0%,
+                    rgba(38, 0, 7, 0.6) 45%,
+                    rgba(7, 1, 33, 0.85) 85%,
+                    rgba(3, 15, 77, 0.6) 100%);
+            filter: blur(40px);
+            animation: daylightDrift 28s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        @keyframes daylightDrift {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-3%, 2%) scale(1.04);
+            }
+
+            100% {
+                transform: translate(2%, -3%) scale(0.98);
+            }
+        }
+
+        .ambient-vignette {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(65, 50, 30, 0.075) 100%);
+        }
+
+        /* --- 2. PERGOLAN PAKSUT MONITASOISET PARALLAX-VARJOT --- */
+        .pergola-wrap {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .pergola-plane {
+            position: absolute;
+            top: -40vh;
+            left: -35vw;
+            width: 170vw;
+            height: 350vh;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        /* Taso 1: Kaukaiset, massiiviset ja hitaimmin liikkuvat pääpalkit */
+        .pergola-plane-1 {
+            filter: blur(75px);
+            opacity: 1;
+        }
+
+        /* Taso 2: Keskisyvyyden päärimoitus (päävarjot) */
+        .pergola-plane-2 {
+            filter: blur(50px);
+            opacity: 1;
+        }
+
+        /* Taso 3: Lähellä kameraa oleva etualan paksu palkki */
+        .pergola-plane-3 {
+            filter: blur(65px);
+            opacity: 1;
+        }
+
+        /* Taso 4: Vastakulmarimoitus */
+        .pergola-plane-4 {
+            filter: blur(60px);
+            opacity: 0.85;
+        }
+
+        .pergola-bar {
+            width: 100%;
+            mix-blend-mode: multiply;
+            border-radius: 60px;
+        }
+
+        .p1-bar {
+            height: 520px;
+            margin-bottom: 540px;
+            background: rgba(0, 181, 187, 0.2);
+        }
+
+        .p2-bar {
+            height: 360px;
+            margin-bottom: 400px;
+            background: rgba(1, 15, 54, 0.24);
+        }
+
+        .p3-bar {
+            height: 460px;
+            margin-bottom: 720px;
+            background: rgba(9, 23, 59, 0.22);
+        }
+
+        .p4-bar {
+            height: 280px;
+            margin-bottom: 660px;
+            background: rgba(1, 157, 224, 0.15);
+        }
+
+        /* --- 3. AURINGONVALON SATUNNAISET PÖLYHIUKKASET (SUNLIGHT DUST MOTES) --- */
+        .dust-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 2;
+            opacity: .35;
+        }
+
+        /* --- 4. VAHVA ELÄVÄ PAPERIKUITU & GRAIN (LIVING GRAIN) --- */
+        .paper-grain {
+            position: fixed;
+            inset: -80px;
+            width: calc(100vw + 160px);
+            height: calc(100vh + 160px);
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.14;
+            /* Vahva, selkeästi tuntuva orgaaninen kuitu ja rae */
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: livingGrain 0.35s steps(8) infinite;
+        }
+
+        @keyframes livingGrain {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            12.5% {
+                transform: translate(-12px, 8px);
+            }
+
+            25% {
+                transform: translate(10px, -7px);
+            }
+
+            37.5% {
+                transform: translate(-8px, -11px);
+            }
+
+            50% {
+                transform: translate(11px, 9px);
+            }
+
+            62.5% {
+                transform: translate(-6px, 12px);
+            }
+
+            75% {
+                transform: translate(8px, -10px);
+            }
+
+            87.5% {
+                transform: translate(-10px, -6px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .paper-grain {
+                animation: none;
+            }
+
+            .ambient-daylight {
+                animation: none;
+            }
+
+            .dust-canvas {
+                display: none;
+            }
+        }
+
+        /* --- OSIONAVIGAATIO: kaksi nuolta, aina oikeassa yläkulmassa --- */
+        .section-nav {
+            position: fixed;
+            top: clamp(1rem, 2.2vw, 2.4rem);
+            right: clamp(1rem, 2.2vw, 2.4rem);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-arrow {
+            appearance: none;
+            background: none;
+            border: none;
+            width: 2.75rem;
+            height: 2.75rem;
+            max-height: 2.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: var(--font-body);
+            font-size: 1.9rem;
+            font-weight: 300;
+            line-height: 1;
+            color: var(--color-ink);
+            opacity: 0.6;
+            cursor: pointer;
+            transition: opacity 0.35s ease, max-height 0.4s ease, transform 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .nav-arrow:hover,
+        .nav-arrow:focus-visible {
+            opacity: 1;
+            transform: scale(1.1);
+            outline: none;
+        }
+
+        /* piilotettu nuoli feidautuu pois ja kutistuu, jolloin toinen nuoli liukuu paikalleen */
+        .nav-arrow.is-hidden {
+            opacity: 0;
+            max-height: 0;
+            pointer-events: none;
+        }
+
+        /* --- YLÄPALKKI --- */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1.5rem;
+            padding-top: clamp(1rem, 2.2vw, 2.4rem);
+            padding-bottom: 0;
+            padding-left: clamp(1rem, 2.2vw, 2.4rem);
+            padding-right: clamp(1rem, 2.2vw, 2.4rem);
+        }
+
+        .brand {
+            font-family: var(--font-heading);
+            font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--color-ink-faint);
+            text-decoration: none;
+        }
+
+        .contact {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.75rem 2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+        }
+
+        .contact a {
+            color: var(--color-ink);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+            opacity: 0.88;
+            white-space: nowrap;
+        }
+
+        .contact a:hover {
+            opacity: 1;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 1px;
+        }
+
+        /* --- SISÄLTÖALUE --- */
+        .content-area {
+            position: relative;
+            z-index: 4;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(1.5rem, 6vw, 6rem);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        main {
+            padding: clamp(3.5rem, 12vh, 8rem) 0;
+            max-width: 820px;
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            line-height: 1.18;
+            letter-spacing: 0.06em;
+            font-weight: 400;
+            color: var(--color-ink);
+            margin-bottom: clamp(1.8rem, 3.5vw, 2.8rem);
+            text-wrap: balance;
+        }
+
+        .lead {
+            font-size: 1.2em;
+            line-height: 1.75;
+            font-weight: 300;
+            color: var(--color-ink);
+            letter-spacing: 0.025em;
+            max-width: 900px;
+        }
+
+        /* --- VAAKA-AIKAJANA (ITSENÄINEN NAVIGAATIO NUOLILLA) --- */
+        .stage {
+            position: relative;
+            z-index: 4;
+            height: 100vh;
+            height: 100svh;
+            flex-shrink: 0;
+            display: flex;
+        }
+
+        .stage-inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: clamp(4rem, 14vh, 10rem);
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        .stage-inner main {
+            padding: 0;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 clamp(1.5rem, 6vw, 6rem);
+        }
+
+        .stage-inner main .lead {
+            max-width: 720px;
+        }
+
+        .timeline {
+            position: relative;
+            width: 100%;
+            height: 6rem;
+            margin-top: clamp(1.5rem, 5vh, 3.5rem);
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 0;
+            top: calc(0.325rem - 1px);
+            width: 100vw;
+            height: 2px;
+            background: var(--color-ink-faint);
+            opacity: 0.35;
+            will-change: transform;
+        }
+
+        .timeline-track {
+            position: absolute;
+            inset: 0;
+            list-style: none;
+        }
+
+        .tl-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            will-change: transform;
+        }
+
+        .tl-dot {
+            display: block;
+            width: 0.65rem;
+            height: 0.65rem;
+            border-radius: 50%;
+            background: var(--color-ink-faint);
+        }
+
+        .tl-label {
+            position: absolute;
+            top: 2.5rem;
+            left: 0;
+            white-space: nowrap;
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.4;
+            letter-spacing: 0.025em;
+            opacity: 0;
+            will-change: opacity;
+            display: flex;
+            align-items: flex-start;
+            color: var(--color-ink-faint);
+        }
+
+        .tl-text {
+            display: block;
+        }
+
+        .tl-title {
+            display: block;
+        }
+
+        .tl-desc {
+            display: block;
+            margin-top: 0.15rem;
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.5;
+            letter-spacing: 0.03em;
+            color: var(--color-ink);
+        }
+
+        .timeline-arrows {
+            width: 100%;
+            max-width: 1200px;
+            margin: clamp(1.5rem, 4vh, 2.5rem) auto 0;
+            padding: 0 clamp(1.5rem, 6vw, 6rem);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tl-arrow {
+            appearance: none;
+            background: none;
+            border: none;
+            width: 3.25rem;
+            height: 3.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: -0.75rem;
+            font-family: var(--font-body);
+            font-size: 2.6rem;
+            font-weight: 300;
+            line-height: 1;
+            color: var(--color-ink-faint);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .tl-arrow+.tl-arrow {
+            margin-left: 0;
+        }
+
+        .tl-arrow:hover,
+        .tl-arrow:focus-visible {
+            opacity: 1;
+            outline: none;
+        }
+
+        .tl-arrow.is-disabled {
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tl-label {
+                transition: none;
+            }
+        }
+
+        footer {
+            padding: 2.5rem 0 clamp(1.5rem, 3vh, 2.5rem);
+            max-width: 720px;
+        }
+
+        /* --- ALAOSIOT --- */
+        .block {
+            position: relative;
+            z-index: 4;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(4rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem);
+        }
+
+        .block h2 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+            font-size: 2rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--color-ink-faint);
+            margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+        }
+
+        .quotes {
+            display: grid;
+            max-width: 900px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quote {
+            grid-area: 1 / 1;
+            opacity: 0;
+            transform: translateX(0);
+            pointer-events: none;
+            visibility: hidden;
+            will-change: transform, opacity;
+        }
+
+        .quote.is-active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .quote-arrows {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: clamp(1.5rem, 3vh, 2.5rem);
+        }
+
+        /* --- PALVELUT --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(1.5rem, 2.8vw, 3rem);
+            margin-top: clamp(1rem, 2.5vh, 2rem);
+        }
+
+        @media (max-width: 960px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2.5rem 1.8rem;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 2.2rem;
+            }
+        }
+
+        .service-col {
+            border-top: 1px solid rgba(250, 222, 204, 0.16);
+            padding-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.3s ease;
+        }
+
+        .service-col:hover {
+            border-color: var(--color-ink-faint);
+        }
+
+        .services-grid.is-visible .service-col {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .services-grid.is-visible .service-col:nth-child(1) { transition-delay: 0.05s; }
+        .services-grid.is-visible .service-col:nth-child(2) { transition-delay: 0.15s; }
+        .services-grid.is-visible .service-col:nth-child(3) { transition-delay: 0.25s; }
+        .services-grid.is-visible .service-col:nth-child(4) { transition-delay: 0.35s; }
+
+        .service-icon {
+            width: 2rem;
+            height: 2rem;
+            color: var(--color-ink-faint);
+            margin-bottom: 1.25rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .service-col:hover .service-icon {
+            transform: translateY(-2px);
+        }
+
+        .service-title {
+            font-family: var(--font-heading);
+            font-size: 1.05rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-ink);
+            margin-bottom: 0.75rem;
+            line-height: 1.35;
+        }
+
+        .service-desc {
+            font-size: 0.94rem;
+            line-height: 1.65;
+            color: var(--color-ink);
+            opacity: 0.88;
+            margin-bottom: 1.25rem;
+        }
+
+        .service-list {
+            list-style: none;
+            padding: 0;
+            margin: auto 0 0 0;
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: var(--color-ink-faint);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .service-list li {
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .service-list li::before {
+            content: "–";
+            position: absolute;
+            left: 0;
+            opacity: 0.6;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .service-col {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
+
+        .quote blockquote {
+            font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+            line-height: 1.5;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            color: var(--color-ink);
+        }
+
+        .quote figcaption {
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.06em;
+            color: var(--color-ink-faint);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 2rem;
+            margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+        }
+
+        .contact-info a,
+        .contact-info span {
+            color: var(--color-ink);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 1px;
+        }
+
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .3rem;
+            max-width: 720px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            background: rgba(27, 4, 18, 0.25);
+            border: 0px solid rgba(0, 0, 0, 0.28);
+            border-radius: 0;
+            padding: 0.9rem 1rem;
+            font: inherit;
+            font-size: 1rem;
+            color: var(--color-ink);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .contact-form textarea {
+            grid-column: 1 / -1;
+            resize: vertical;
+        }
+
+        .contact-form ::placeholder {
+            color: var(--color-ink);
+            opacity: 0.45;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            background: rgba(255, 137, 3, 0.1);
+        }
+
+        .form-submit {
+            grid-column: 1 / -1;
+            justify-self: start;
+            appearance: none;
+            background: rgba(5, 6, 32, 0.158);
+            border: 0px solid var(--color-ink-faint);
+            margin-top: 2rem;
+            padding: 0.8rem 1.8rem;
+            font: inherit;
+            font-size: 1rem;
+            letter-spacing: 0.08em;
+            color: var(--color-ink-faint);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .form-submit:hover,
+        .form-submit:focus-visible {
+            outline: none;
+            background: var(--color-ink-faint);
+            color: var(--color-paper);
+        }
+
+        @media (max-width: 640px) {
+            .contact-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .quote {
+                transition-duration: 0.5s;
+            }
+        }
+
+        .disclaimer {
+            font-size: 0.88rem;
+            line-height: 1.7;
+            color: var(--color-ink);
+            letter-spacing: 0.03em;
+            font-weight: 300;
+        }
+
+        /* Mobiilinäkymä */
+        @media (max-width: 640px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.65rem;
+            }
+
+            .stage {
+                padding-top: clamp(4.5rem, 11vh, 6.5rem);
+            }
+
+            h1 {
+                font-size: 2.4rem;
+            }
+
+            .lead {
+                font-size: 1.1em;
+                line-height: 1.25;
+                font-weight: 300;
+            }
+
+            .brand {
+                font-size: 2rem;
+            }
+
+            /* kuvaukset rivittyvät tekstikappaleen leveyteen eivätkä jää näkymättömiin */
+            .tl-label {
+                white-space: normal;
+                width: calc(100vw - 2 * clamp(1.5rem, 6vw, 6rem));
+            }
+
+            .timeline {
+                height: 13rem;
+            }
+
+            .contact {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            /* Yhteystiedot aina allekkain riippumatta sisällön pituudesta */
+            .contact-info {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+
+            .contact-info span,
+            .contact-info a {
+                display: block;
+                width: 100%;
+                white-space: normal;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Elävä orgaaninen tausta (korostettu) -->
-  <div class="ambient-canvas">
-    <div class="blob blob-amber"></div>
-    <div class="blob blob-terracotta"></div>
-    <div class="blob blob-warm"></div>
-  </div>
-  <div class="paper-grain"></div>
+    <!-- Luonnonvalon pehmeä vaellus & huoneen valaistus -->
+    <div class="ambient-daylight" aria-hidden="true"></div>
+    <div class="ambient-vignette" aria-hidden="true"></div>
 
-  <header>
-    <div class="brand">Laaki</div>
-    <nav class="section-nav" aria-label="Sivun osiot">
-      <button type="button" class="nav-arrow" id="navUp" aria-label="Edellinen osio">↑</button>
-      <button type="button" class="nav-arrow" id="navDown" aria-label="Seuraava osio">↓</button>
-    </nav>
-  </header>
+    <!-- Pergolan paksut monitasoiset parallax-varjot -->
+    <div class="pergola-wrap" aria-hidden="true">
+        <!-- Taso 1: Kaukaiset, massiiviset ja hitaimmin liikkuvat pääpalkit -->
+        <div class="pergola-plane pergola-plane-1" id="pergola1">
+            <div class="pergola-bar p1-bar"></div>
+            <div class="pergola-bar p1-bar"></div>
+            <div class="pergola-bar p1-bar"></div>
+            <div class="pergola-bar p1-bar"></div>
+        </div>
+        <!-- Taso 4: Hento vastakulmarimoitus luomassa aitoa pergolaristikon syvyyttä -->
+        <div class="pergola-plane pergola-plane-4" id="pergola4">
+            <div class="pergola-bar p4-bar"></div>
+            <div class="pergola-bar p4-bar"></div>
+            <div class="pergola-bar p4-bar"></div>
+        </div>
+        <!-- Taso 2: Keskisyvyyden päärimoitus -->
+        <div class="pergola-plane pergola-plane-2" id="pergola2">
+            <div class="pergola-bar p2-bar"></div>
+            <div class="pergola-bar p2-bar"></div>
+            <div class="pergola-bar p2-bar"></div>
+            <div class="pergola-bar p2-bar"></div>
+            <div class="pergola-bar p2-bar"></div>
+        </div>
+        <!-- Taso 3: Lähellä kameraa oleva etualan paksu palkki (liikkuu nopeammin ohi) -->
+        <div class="pergola-plane pergola-plane-3" id="pergola3">
+            <div class="pergola-bar p3-bar"></div>
+            <div class="pergola-bar p3-bar"></div>
+            <div class="pergola-bar p3-bar"></div>
+        </div>
+    </div>
 
-  <section class="stage" id="stage">
-    <div class="stage-inner">
-      <main>
-        <h1>Tiedä & mene</h1>
-        <p class="lead" id="lead">
-          Laaki on hyvä kaveri muuttuvassa maailmassa. Yrityksen koko pitkä historia on tarina mukautumisesta
-          erilaisten toimjoiden kohtaamiin pulmiin ja mahdollisuuksiin. Mikään ei inspiroi niin kuin
-          kunnon haaste.
+    <!-- Valon leijuvat pölyhiukkaset (sunlight dust motes) -->
+    <canvas id="dustCanvas" class="dust-canvas" aria-hidden="true"></canvas>
+
+    <!-- Vahva, selkeästi tuntuva elävä paperikuitu ja analoginen grain (Living Grain) -->
+    <div class="paper-grain" aria-hidden="true"></div>
+
+    <header>
+        <div class="brand">Laaki</div>
+        <nav class="section-nav" aria-label="Sivun osiot">
+            <button type="button" class="nav-arrow" id="navUp" aria-label="Edellinen osio">↑</button>
+            <button type="button" class="nav-arrow" id="navDown" aria-label="Seuraava osio">↓</button>
+        </nav>
+    </header>
+
+    <section class="stage" id="stage">
+        <div class="stage-inner">
+            <main>
+                <h1>Tiedä &amp; mene</h1>
+                <p class="lead" id="lead">
+                    Laaki on hyvä kaveri muuttuvassa maailmassa. Yrityksen koko pitkä historia on tarina mukautumisesta
+                    erilaisten toimijoiden kohtaamiin pulmiin ja mahdollisuuksiin. Mikään ei inspiroi niin kuin
+                    kunnon haaste.
+                </p>
+            </main>
+            <div class="timeline" aria-label="Palvelun vaiheet">
+                <div class="timeline-line"></div>
+                <ol class="timeline-track" id="track">
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Kaikki alkoi 2009</span><span class="tl-desc">Pieni
+                                    suunnittelutoimisto vilahtaa
+                                    Aamulehdessä.
+                                    Asiakkaat
+                                    haluavat lehtimainoksia ja printtiä.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Alustat ja verkkokaupat</span><span class="tl-desc">Asiakkuudet
+                                    syvenevät ja
+                                    puskaradio soi. Maailma siirtyy enenevissä määrin nettiin.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Väkeviä brändejä</span><span class="tl-desc">Asiakkaat saavat
+                                    kokonaisvaltaisempia
+                                    työkaluja
+                                    maailman valloitukseen ja viestinnän hallintaan.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Tapahtumat ja tuotannot</span><span
+                                    class="tl-desc">Digitalisoituvassa maailmassa on
+                                    tilausta
+                                    myös vaikuttaville fyysisille kohtaamisille ja videoille.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Strategia korostuu</span><span class="tl-desc">Kriisit ja koronat
+                                    käännetään
+                                    kilpailueduksi ja tulevaisuus otetaan omiin käsiin.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Yhteiskunnallinen vaikuttavuus</span><span
+                                    class="tl-desc">Markkinatalouden
+                                    mekanismit
+                                    valjastetaan positiivisen muutoksen palvelukseen.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Vuorovaikutus ja automaatio</span><span
+                                    class="tl-desc">Nykyaikaisten työkalujen ja
+                                    toimintamallien avulla voidaan säästää paljon aikaa, rahaa ja
+                                    hermoja.</span></span></span></li>
+                    <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
+                                    class="tl-title">Haaste = mahdollisuus</span><span class="tl-desc">Ota yhteyttä kun
+                                    haluat kokemusta ja näkemystä muutoksen hallintaan.</span></span></span></li>
+                </ol>
+            </div>
+            <div class="timeline-arrows">
+                <button type="button" class="tl-arrow is-disabled" id="tlPrev" aria-label="Edellinen kohta">←</button>
+                <button type="button" class="tl-arrow" id="tlNext" aria-label="Seuraava kohta">→</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="block" id="tekosia" aria-labelledby="tekosia-h">
+        <h2 id="tekosia-h">Tekosia</h2>
+        <div class="quotes">
+            <figure class="quote is-active">
+                <blockquote>Huipputason musiikillisen ja pedagogisen osaamisen varaan rakentunut
+                    jousisoitinkauppa on saanut Laakista sivuston ohella strategista ohjausta viestintäänsä. Seurasitko
+                    Lindan ja
+                    Peten matkaa Euroviisujen 2026 yhteydessä?
+                </blockquote>
+                <figcaption>Mute Strings, 2025–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Valtakunnallisia palkintoja vuodesta toiseen pokkaava luontohotelli haki yritysilmeensä ja
+                    verkkosivustonsa Laakista. Tämä yhteistyö on käsittänyt myös kaikenlaista kiinteistön kyltityksistä
+                    omiin
+                    olutlaatuihin.
+                </blockquote>
+                <figcaption>Haltia Lake Lodge, 2022–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Laaki saatteli kulttimaineeseen nousseen pro shopin alkutaipaleelta aina yrittäjäparin
+                    eläkkeelle ja
+                    miljoonan yrityskauppoihin asti. Matkalle mahtui paljon sivustokehitystä, uutiskirjeitä,
+                    tempauksia ja mutkatonta viestintää.</blockquote>
+                <figcaption>Golf Balata, 2010–2021</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Nokialla toimineen Tehdas 108:n muutosvoimainen yhteisötoiminta tarvitsi
+                    strategista ja viestinnällistä tukea toiminnan kasvaessa ja kerätessä euroopanlaajuista huomiota.
+                    Yhteistyö on jatkunut monen arvokkaan hankkeen muodossa.</blockquote>
+                <figcaption>Tehdas 108, 2018–2020</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Yhdistyksen verkkoratkaisut kaipasivat kipeästi järkeistämistä. Laaki kuljetti hankkeen
+                    ensimmäisistä työryhmistä sujuvasti toteutukseen ja käyttöönottoon saakka.
+                    Kehitystyötä on sittemmin jatkettu muuttuvien tilanteiden mukaan.</blockquote>
+                <figcaption>Suomen Lastenlääkäriyhdistys 2022–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Valtakunnallisen asiantuntijaorganisaation viestinnän johtaminen on tarjonnut erinomaisen
+                    paikan kehittää käytäntöjä ja työkaluja, joilla karttuva tieto, osaaminen ja tehty työ muuttuvat
+                    vaikuttavaksi viestinnäksi.</blockquote>
+                <figcaption>Yhteiskunnallisten yritysten osaamiskeskus 2023–2027</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Monen olympiavoittajan luottofyssari pilotoi Suomessa liikkuvan hoitoyksikön, joka on
+                    varusteltu huippu-urheilun vaatimustason mukaisesti. Brändi sivuineen ja auton teippauksineen
+                    luotiin Laakissa.
+                </blockquote>
+                <figcaption>Fysport 2024–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Harrastuksesta miljoonabisnekseksi kehittynyt golfmatkatoiminta on yksi Laakin
+                    pitkäaikaisimpia asiakkuuksia. 15 vuoden varrelle on mahtunut paljon sivustokehitystä, kampiksia,
+                    messuja ja
+                    markkinointia.
+                </blockquote>
+                <figcaption>Golfpassi, 2010–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Laakin asiakkaissa on ainakin kolme vuoden yrittäjäksi valittua. Yhdelle järjestettiin kieli
+                    poskella uniikki murhamysteerikin. 70 hengen porukassa kaupunginjohto ja asiakastyöntekijät
+                    sekoittuivat iloisesti samaan soppaan.
+                </blockquote>
+                <figcaption>Sofiakylä, syksy 2019</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Myyntihommat elämystuotantoon vaihtaneen yrittäjän konsepti ja brändi puhallettiin henkiin
+                    Laakin toimistolla. Toiminta kasvoi tasaisesti kaupungin tunnetuimmaksi virkistyspäivien
+                    järjestäjäksi ja
+                    suunta on yhä ylöspäin.
+                </blockquote>
+                <figcaption>Amazing City, 2016–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Yritysten, koulujen ja sairaaloiden sisäilman hallintaan keskittynyt toimija on turvannut
+                    tärkeän toiminnan, kun uusia tiloja tai korjausta joudutaan odottamaan. Laaki on
+                    ollut luottokumppani haastavan toimintaympäristön haltuun otossa.
+                </blockquote>
+                <figcaption>Sisäilmalähetti 2011–2026</figcaption>
+            </figure>
+            <figure class="quote">
+                <blockquote>Uudenlainen ryhmille rakennettu seikkailupeli hyödyntää Tampereen keskustassa 200 vuotta
+                    komeilleen tehdaskiinteistön salaisia tunneleita ja ikonisia torneja. Laaki on jo n. 7000 kävijää
+                    nähneen pelin
+                    luoja ja brändin hallitsija.
+                </blockquote>
+                <figcaption>Unfold Finlayson, 2019–2026</figcaption>
+            </figure>
+        </div>
+        <div class="quote-arrows">
+            <button type="button" class="tl-arrow" id="quotePrev" aria-label="Edellinen sitaatti">←</button>
+            <button type="button" class="tl-arrow" id="quoteNext" aria-label="Seuraava sitaatti">→</button>
+        </div>
+    </section>
+
+    <section class="block" id="palvelut" aria-labelledby="palvelut-h">
+        <h2 id="palvelut-h">Palvelut</h2>
+        <div class="services-grid">
+            <div class="service-col">
+                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="4" y="4" width="14" height="14" rx="2" />
+                    <circle cx="17" cy="17" r="7" />
+                </svg>
+                <h3 class="service-title">Visuaalisuus &amp; brändi</h3>
+                <p class="service-desc">
+                    Tunnistettava ja pitkäikäinen ilme, joka erottuu edukseen ja kantaa kaikissa kanavissa.
+                </p>
+                <ul class="service-list">
+                    <li>Yritysilmeet &amp; brändi-identiteetit</li>
+                    <li>UI- &amp; käyttöliittymäsuunnittelu</li>
+                    <li>Julkaisut, pakkaukset &amp; opasteet</li>
+                </ul>
+            </div>
+
+            <div class="service-col">
+                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="5" width="22" height="18" rx="2" />
+                    <line x1="3" y1="10" x2="25" y2="10" />
+                    <circle cx="6.5" cy="7.5" r="0.75" fill="currentColor" />
+                    <circle cx="9.5" cy="7.5" r="0.75" fill="currentColor" />
+                    <line x1="8" y1="15" x2="14" y2="15" />
+                    <line x1="8" y1="18" x2="20" y2="18" />
+                </svg>
+                <h3 class="service-title">Verkkototeutukset</h3>
+                <p class="service-desc">
+                    Ketterät, nopeat ja helposti ylläpidettävät sivustot ilman turhaa teknistä painolastia.
+                </p>
+                <ul class="service-list">
+                    <li>Kevyet esittely- &amp; yrityssivustot</li>
+                    <li>Kampanjat &amp; laskeutumissivut</li>
+                    <li>Selkeät verkkokaupat &amp; asiointialustat</li>
+                </ul>
+            </div>
+
+            <div class="service-col">
+                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="14,3 24,8.5 24,19.5 14,25 4,19.5 4,8.5" />
+                    <line x1="14" y1="3" x2="14" y2="25" />
+                    <line x1="14" y1="14" x2="24" y2="8.5" />
+                    <line x1="14" y1="14" x2="4" y2="8.5" />
+                </svg>
+                <h3 class="service-title">Hankinta &amp; ohjaus</h3>
+                <p class="service-desc">
+                    Riippumaton ostajan asiantuntija. Varmistetaan, että laaja verkkoprojekti tai sovellus vastaa todellista tarvetta.
+                </p>
+                <ul class="service-list">
+                    <li>Vaatimusmäärittelyt &amp; hankintatuki</li>
+                    <li>Monimutkaisten sovellusten ohjaus</li>
+                    <li>Arkkitehtuuri &amp; toimittajavalinnat</li>
+                </ul>
+            </div>
+
+            <div class="service-col">
+                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="14" cy="14" r="10" stroke-dasharray="2 2" opacity="0.5" />
+                    <polygon points="14,4 16.5,11.5 24,14 16.5,16.5 14,24 11.5,16.5 4,14 11.5,11.5" />
+                </svg>
+                <h3 class="service-title">Strategia &amp; muutos</h3>
+                <p class="service-desc">
+                    Selkeä suunta ja käytännölliset mallit silloin, kun toimintaympäristö, liiketoiminta tai viestintä muuttuu.
+                </p>
+                <ul class="service-list">
+                    <li>Strateginen sparraus &amp; konseptit</li>
+                    <li>Muutosjohtaminen &amp; työpajat</li>
+                    <li>Toimintamallien &amp; viestinnän kirkastus</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="block" id="kontakti" aria-labelledby="kontakti-h">
+        <h2 id="kontakti-h">Kontakti</h2>
+        <p class="contact-info">
+            <span>Henrik Lindström</span>
+            <a href="tel:+358403515553">040 3515 553</a>
+            <a href="mailto:imago@laaki.fi">imago@laaki.fi</a>
         </p>
-      </main>
-      <div class="timeline" aria-label="Palvelun vaiheet">
-        <div class="timeline-line"></div>
-        <ol class="timeline-track" id="track">
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Kaikki alkoi 2009</span><span class="tl-desc">Pieni suunnittelutoimisto vilahtaa
-                  Aamulehdessä.
-                  Asiakkaat
-                  haluavat lehtimainoksia ja printtiä.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Alustat ja verkkokaupat</span><span class="tl-desc">Asiakkuudet syvenevät ja
-                  puskaradio soi. Maailma siirtyy enenevissä määrin nettiin.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Väkeviä brändejä</span><span class="tl-desc">Asiakkaat saavat kokonaisvaltaisempia
-                  työkaluja
-                  maailman valloitukseen ja viestinnän hallintaan.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Tapahtumat ja tuotannot</span><span class="tl-desc">Digitalisoituvassa maailmassa on
-                  tilausta
-                  myös vaikuttaville fyysisille kohtaamisille ja videoille.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Strategia korostuu</span><span class="tl-desc">Kriisit ja koronat käännetään
-                  kilpailueduksi ja tulevaisuus otetaan omiin käsiin.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Yhteiskunnallinen vaikuttavuus</span><span class="tl-desc">Markkinatalouden
-                  mekanismit
-                  valjastetaan positiivisen muutoksen palvelukseen.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Vuorovaikutus ja automaatio</span><span class="tl-desc">Nykyaikaisten työkalujen ja
-                  toimintamallien avulla voidaan säästää paljon aikaa, rahaa ja hermoja.</span></span></span></li>
-          <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                  class="tl-title">Mihin sinä tähtäät?</span><span class="tl-desc">Onko edessä haaste vai mahdollisuus?
-                  Ota yhteyttä kun haluat kokemusta ja näkemystä muutoksen hallintaan.</span></span></span></li>
-        </ol>
-      </div>
-      <div class="timeline-arrows">
-        <button type="button" class="tl-arrow is-disabled" id="tlPrev" aria-label="Edellinen kohta">←</button>
-        <button type="button" class="tl-arrow" id="tlNext" aria-label="Seuraava kohta">→</button>
-      </div>
+        <form class="contact-form" id="contact-form">
+            <input type="text" name="Nimi" placeholder="Nimi" autocomplete="name" aria-label="Nimi" required>
+            <input type="text" name="Yritys" placeholder="Yritys" autocomplete="organization" aria-label="Yritys">
+            <input type="email" name="Sähköposti" placeholder="Sähköposti" autocomplete="email" aria-label="Sähköposti"
+                required>
+            <input type="tel" name="Puhelin" placeholder="Puhelin" autocomplete="tel" aria-label="Puhelin">
+            <textarea name="Asia" placeholder="Asia" rows="5" aria-label="Asia" required></textarea>
+            <button type="submit" class="form-submit">Lähetä →</button>
+        </form>
+    </section>
+
+    <div class="content-area">
+        <footer>
+            <p class="disclaimer">
+                Laaki on 2009 perustettu suunnittelu- ja konsulttitoimisto, joka muuttuu sujuvasti maailman mukana.
+            </p>
+        </footer>
     </div>
-  </section>
 
-  <section class="block" id="tekosia" aria-labelledby="tekosia-h">
-    <h2 id="tekosia-h">Tekosia</h2>
-    <div class="quotes">
-      <figure class="quote is-active">
-        <blockquote>Huipputason musiikillisen ja pedagogisen osaamisen varaan rakentunut
-          jousisoitinkauppa on saanut Laakista sivuston ohella strategista ohjausta viestintäänsä. Seurasitko Lindan ja
-          Peten matkaa Euroviisujen 2026 yhteydessä?
-        </blockquote>
-        <figcaption>Mute Strings, 2025–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Valtakunnallisia palkintoja vuodesta toiseen pokkaava luontohotelli haki yritysilmeensä ja
-          verkkosivustonsa Laakista. Tämä yhteistyö on käsittänyt myös kaikenlaista kiinteistön kyltityksistä omiin
-          olutlaatuihin.
-        </blockquote>
-        <figcaption>Haltia Lake Lodge, 2022–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Laaki saatteli kulttimaineeseen nousseen pro shopin alkutaipaleelta aina yrittäjäparin eläkkeelle ja
-          miljoonan
-          yrityskauppoihin asti. Matkalle mahtui paljon sivustokehitystä, uutiskirjeitä,
-          tempauksia ja mutkatonta viestintää.</blockquote>
-        <figcaption>Golf Balata, 2010–2021</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Nokialla toimineen Tehdas 108:n muutosvoimainen yhteisötoiminta tarvitsi
-          strategista ja viestinnällistä tukea toiminnan kasvaessa ja kerätessä euroopanlaajuista huomiota.
-          Yhteistyö on jatkunut monen arvokkaan hankkeen muodossa.</blockquote>
-        <figcaption>Tehdas 108, 2018–2020</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Yhdistyksen verkkoratkaisut kaipasivat kipeästi järkeistämistä. Laaki kuljetti hankkeen
-          ensimmäisistä työryhmistä sujuvasti toteutukseen ja käyttöönottoon saakka.
-          Kehitystyötä on sittemmin jatkettu muuttuvien tilanteiden mukaan.</blockquote>
-        <figcaption>Suomen Lastenlääkäriyhdistys 2022–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Valtakunnallisen asiantuntijaorganisaation viestinnän johtaminen on tarjonnut erinomaisen paikan
-          kehittää käytäntöjä ja työkaluja, joilla karttuva tieto, osaaminen ja tehty työ muuttuvat vaikuttavaksi
-          viestinnäksi.</blockquote>
-        <figcaption>Yhteiskunnallisten yritysten osaamiskeskus 2023–2027</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Monen olympiavoittajan luottofyssari pilotoi Suomessa liikkuvan hoitoyksikön, joka on varusteltu
-          huippu-urheilun vaatimustason mukaisesti. Brändi sivuineen ja auton teippauksineen luotiin Laakissa.
-        </blockquote>
-        <figcaption>Fysport 2024–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Harrastuksesta miljoonabisnekseksi kehittynyt golfmatkatoiminta on yksi Laakin pitkäaikaisimpia
-          asiakkuuksia. 15 vuoden varrelle on mahtunut paljon sivustokehitystä, kampiksia, messuja ja markkinointia.
-        </blockquote>
-        <figcaption>Golfpassi, 2010–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Laakin asiakkaissa on ainakin kolme vuoden yrittäjäksi valittua. Yhdelle järjestettiin kieli
-          poskella uniikki murhamysteerikin. 70 hengen porukassa kaupunginjohto ja asiakastyöntekijät
-          sekoittuivat iloisesti samaan soppaan.
-        </blockquote>
-        <figcaption>Sofiakylä, syksy 2019</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Myyntihommat elämystuotantoon vaihtaneen yrittäjän konsepti ja brändi puhallettiin henkiin Laakin
-          toimistolla. Toiminta kasvoi tasaisesti kaupungin tunnetuimmaksi virkistyspäivien järjestäjäksi ja suunta on
-          yhä ylöspäin.
-        </blockquote>
-        <figcaption>Amazing City, 2016–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Yritysten, koulujen ja sairaaloiden sisäilman hallintaan keskittynyt toimija on turvannut
-          tärkeän toiminnan, kun uusia tiloja tai korjausta joudutaan odottamaan. Laaki on
-          ollut luottokumppani haastavan toimintaympäristön haltuun otossa.
-        </blockquote>
-        <figcaption>Sisäilmalähetti 2011–2026</figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Uudenlainen ryhmille rakennettu seikkailupeli hyödyntää Tampereen keskustassa 200 vuotta komeilleen
-          tehdaskiinteistön salaisia tunneleita ja ikonisia torneja. Laaki on jo n. 7000 kävijää nähneen pelin luoja ja
-          brändin hallitsija.
-        </blockquote>
-        <figcaption>Unfold Finlayson, 2019–2026</figcaption>
-      </figure>
-    </div>
-    <div class="quote-arrows">
-      <button type="button" class="tl-arrow" id="quotePrev" aria-label="Edellinen sitaatti">←</button>
-      <button type="button" class="tl-arrow" id="quoteNext" aria-label="Seuraava sitaatti">→</button>
-    </div>
-  </section>
+    <script>
+        // =========================================================================
+        // 1. PERGOLAN PAKSUT MONITASOISET PARALLAX-VARJOT
+        // =========================================================================
+        (function () {
+            const p1 = document.getElementById('pergola1');
+            const p2 = document.getElementById('pergola2');
+            const p3 = document.getElementById('pergola3');
+            const p4 = document.getElementById('pergola4');
+            if (!p1 || !p2) return;
 
-  <section class="block" id="kontakti" aria-labelledby="kontakti-h">
-    <h2 id="kontakti-h">Kontakti</h2>
-    <p class="contact-info">
-      <span>Henrik Lindström</span>
-      <a href="tel:+358403515553">040 3515 553</a>
-      <a href="mailto:imago@laaki.fi">imago@laaki.fi</a>
-    </p>
-    <form class="contact-form" id="contact-form">
-      <input type="text" name="Nimi" placeholder="Nimi" autocomplete="name" aria-label="Nimi" required>
-      <input type="text" name="Yritys" placeholder="Yritys" autocomplete="organization" aria-label="Yritys">
-      <input type="email" name="Sähköposti" placeholder="Sähköposti" autocomplete="email" aria-label="Sähköposti"
-        required>
-      <input type="tel" name="Puhelin" placeholder="Puhelin" autocomplete="tel" aria-label="Puhelin">
-      <textarea name="Asia" placeholder="Asia" rows="5" aria-label="Asia" required></textarea>
-      <button type="submit" class="form-submit">Lähetä →</button>
-    </form>
-  </section>
+            let targetY = window.scrollY;
+            let currentY = window.scrollY;
+            let rafId = null;
 
-  <div class="content-area">
+            function update() {
+                currentY += (targetY - currentY) * 0.12; // Pehmeä lerp-inertia
 
-    <footer>
-      <p class="disclaimer">
-        Laaki on 2009 perustettu suunnittelu- ja konsulttitoimisto, joka muuttuu sujuvasti maailman mukana.
-      </p>
-    </footer>
-  </div>
+                // 4 eri syvyystasoa eri nopeuksilla ja kulmilla suhteessa toisiinsa:
+                p1.style.transform = `rotate(-8deg) translateY(${(-currentY * 0.16).toFixed(1)}px)`; // Kaukainen tausta (hidas)
+                if (p4) p4.style.transform = `rotate(3deg) translateY(${(-currentY * 0.26).toFixed(1)}px)`;  // Vastakulmarimoitus
+                p2.style.transform = `rotate(-6deg) translateY(${(-currentY * 0.42).toFixed(1)}px)`; // Keskisyvyys
+                if (p3) p3.style.transform = `rotate(-11deg) translateY(${(-currentY * 0.74).toFixed(1)}px)`; // Läheinen etuala (nopea)
 
-  <script>
-    // Aikajana: itsenäinen sivusuuntainen navigaatio nuolilla, täysin irti sivun vierityksestä
-    (function () {
-      const lead = document.getElementById('lead');
-      const line = document.querySelector('.timeline-line');
-      const items = [...document.querySelectorAll('#track .tl-item')];
-      const labels = items.map(i => i.querySelector('.tl-label'));
-      const n = items.length;
-      let gap, fade, left, right, target = 0, pos = 0, raf = null;
-      const MIN_OPACITY = 0.15; // fokuksen ulkopuolisten osioiden näkyvyys
+                if (Math.abs(targetY - currentY) > 0.1) {
+                    rafId = requestAnimationFrame(update);
+                } else {
+                    rafId = null;
+                }
+            }
 
-      function measure() {
-        const r = lead.getBoundingClientRect();
-        left = r.left;
-        right = r.right;
-        fade = r.width * 0.2;
-        gap = r.width * 1.3; // yksi teksti kerrallaan näkyvissä
-        line.style.width = ((n - 1) * gap + window.innerWidth) + 'px';
-        render();
-      }
+            window.addEventListener('scroll', () => {
+                targetY = window.scrollY;
+                if (!rafId) rafId = requestAnimationFrame(update);
+            }, { passive: true });
 
-      function render() {
-        line.style.transform = 'translateX(' + (left - pos * gap).toFixed(1) + 'px)';
-        items.forEach((el, i) => {
-          const x = left + (i - pos) * gap;
-          el.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
-          const maxX = Math.max(left, right - labels[i].offsetWidth);
-          let o = 1;
-          if (x > maxX) o = 1 - (x - maxX) / fade;
-          else if (x < left) o = 1 - (left - x) / fade;
-          const op = Math.min(1, Math.max(MIN_OPACITY, o));
-          labels[i].style.opacity = op.toFixed(3);
+            // Alkualustus
+            update();
+        })();
+
+        // =========================================================================
+        // 1.5. AURINGONVALON SATUNNAISET PÖLYHIUKKASET (SUNLIGHT DUST MOTES)
+        // =========================================================================
+        (function () {
+            const canvas = document.getElementById('dustCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            let W = window.innerWidth;
+            let H = window.innerHeight;
+            let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            function resize() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                W = window.innerWidth;
+                H = window.innerHeight;
+                canvas.width = Math.round(W * dpr);
+                canvas.height = Math.round(H * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Satunnainen, harva joukko pölyhiukkasia optisella syvyysterävyydellä
+            const count = Math.round(Math.min(34, Math.max(18, (W * H) / 45000)));
+            const particles = [];
+            const FOCAL_PLANE = 0.48; // Kameran tarkennustaso keskitilassa
+
+            for (let i = 0; i < count; i++) {
+                const baseDepth = Math.random(); // 0 (kaukainen tausta) -> 1 (aivan etualan linssin edessä)
+                particles.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    baseRadius: 0.75 + Math.random() * 1.3,
+                    baseDepth: baseDepth,
+                    depthOscAmp: 0.14 + Math.random() * 0.24,   // kuinka paljon hiukkanen liukuu syvyyssuunnassa
+                    depthPhase: Math.random() * Math.PI * 2,
+                    depthSpeed: 0.005 + Math.random() * 0.011,  // elävä, hidas fokusvaeltelu
+                    vx: (Math.random() - 0.48) * 0.16,
+                    vy: -0.05 - Math.random() * 0.14,           // lempeä nousu auringonlämmössä
+                    phaseX: Math.random() * Math.PI * 2,
+                    phaseY: Math.random() * Math.PI * 2,
+                    phaseAlpha: Math.random() * Math.PI * 2,
+                    swaySpeedX: 0.006 + Math.random() * 0.012,
+                    swaySpeedY: 0.005 + Math.random() * 0.01,
+                    twinkleSpeed: 0.008 + Math.random() * 0.02,
+                    baseAlpha: 0.3 + Math.random() * 0.45,
+                    isAmber: Math.random() > 0.62
+                });
+            }
+
+            let lastScrollY = window.scrollY;
+            let scrollVel = 0;
+
+            window.addEventListener('scroll', () => {
+                const sy = window.scrollY;
+                scrollVel = sy - lastScrollY;
+                lastScrollY = sy;
+            }, { passive: true });
+
+            function tick() {
+                ctx.clearRect(0, 0, W, H);
+
+                // Vaimentuva rullauskitka
+                scrollVel *= 0.88;
+
+                particles.forEach(p => {
+                    p.depthPhase += p.depthSpeed;
+                    p.phaseX += p.swaySpeedX;
+                    p.phaseY += p.swaySpeedY;
+                    p.phaseAlpha += p.twinkleSpeed;
+
+                    // Elävä syvyystaso: hiukkanen leijuu syvyyssuunnassa tarkennustason läpi
+                    const currentDepth = Math.max(0.04, Math.min(1.12, p.baseDepth + Math.sin(p.depthPhase) * p.depthOscAmp));
+
+                    // Etäisyys tarkennustasosta (0 = täysin terävä, >0 = sumea pehmeä bokeh)
+                    const distFromFocus = Math.abs(currentDepth - FOCAL_PLANE);
+
+                    // Vaihteleva ja elävä blur: tarkimmillaan n. 0.4px, kauempana jopa 12px pehmeä valokiekko
+                    const blur = 0.35 + Math.pow(distFromFocus * 2.2, 1.35) * 8.5;
+
+                    // Näennäinen säde kasvaa blurrin myötä (optinen Circle of Confusion)
+                    const renderRadius = p.baseRadius * (1 + currentDepth * 0.45) + blur * 0.85;
+
+                    // Syvyyskohtainen liike ja rullausparallaksi (etualan hiukkaset liikkuvat nopeammin)
+                    p.x += p.vx + Math.sin(p.phaseX) * 0.2;
+                    p.y += p.vy + Math.cos(p.phaseY) * 0.12 - scrollVel * currentDepth * 0.32;
+
+                    // Reunojen ylitys
+                    if (p.y < -45) { p.y = H + 40; p.x = Math.random() * W; }
+                    else if (p.y > H + 45) { p.y = -40; p.x = Math.random() * W; }
+                    if (p.x < -45) p.x = W + 40;
+                    else if (p.x > W + 40) p.x = -40;
+
+                    // Energian säilyminen: mitä laajempi sumea bokeh-kiekko, sitä pehmeämpi pintaluminanssi
+                    const energyFactor = 1 / (1 + blur * 0.42);
+                    const twinkle = 0.42 + 0.58 * Math.sin(p.phaseAlpha);
+                    const alpha = Math.min(0.95, p.baseAlpha * twinkle * energyFactor);
+
+                    if (alpha <= 0.008) return;
+
+                    ctx.save();
+
+                    // Pehmeä optinen bokeh-kiekko liukuvärillä
+                    const grad = ctx.createRadialGradient(
+                        p.x, p.y, Math.max(0, renderRadius * 0.1 - blur * 0.15),
+                        p.x, p.y, renderRadius
+                    );
+
+                    const r = p.isAmber ? 235 : 250;
+                    const g = p.isAmber ? 169 : 222;
+                    const b = p.isAmber ? 99 : 204;
+
+                    grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`);
+                    grad.addColorStop(0.45, `rgba(${r}, ${g}, ${b}, ${(alpha * 0.65).toFixed(3)})`);
+                    grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, renderRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Kun hiukkanen osuu tarkennustasoon, siihen syttyy auringossa kimmeltävä terävä ydin
+                    if (distFromFocus < 0.16) {
+                        const coreFactor = (0.16 - distFromFocus) / 0.16;
+                        const coreAlpha = coreFactor * alpha * 1.6;
+                        ctx.fillStyle = `rgba(255, 248, 235, ${Math.min(1, coreAlpha).toFixed(3)})`;
+                        ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${Math.min(1, coreAlpha).toFixed(3)})`;
+                        ctx.shadowBlur = 3;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.baseRadius * 0.75, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(tick);
+            }
+
+            requestAnimationFrame(tick);
+        })();
+
+        // =========================================================================
+        // 2. AIKAJANA: VAAKASUUNTAINEN NAVIGAATIO
+        // =========================================================================
+        (function () {
+            const lead = document.getElementById('lead');
+            const line = document.querySelector('.timeline-line');
+            const items = [...document.querySelectorAll('#track .tl-item')];
+            const labels = items.map(i => i.querySelector('.tl-label'));
+            const n = items.length;
+            let gap, fade, left, right, target = 0, pos = 0, raf = null;
+            const MIN_OPACITY = 0.15;
+
+            function measure() {
+                if (!lead) return;
+                const r = lead.getBoundingClientRect();
+                left = r.left;
+                right = r.right;
+                fade = r.width * 0.2;
+                gap = r.width * 1.3;
+                if (line) line.style.width = ((n - 1) * gap + window.innerWidth) + 'px';
+                render();
+            }
+
+            function render() {
+                if (!line) return;
+                line.style.transform = 'translateX(' + (left - pos * gap).toFixed(1) + 'px)';
+                items.forEach((el, i) => {
+                    const x = left + (i - pos) * gap;
+                    el.style.transform = 'translateX(' + x.toFixed(1) + 'px)';
+                    const maxX = Math.max(left, right - labels[i].offsetWidth);
+                    let o = 1;
+                    if (x > maxX) o = 1 - (x - maxX) / fade;
+                    else if (x < left) o = 1 - (left - x) / fade;
+                    const op = Math.min(1, Math.max(MIN_OPACITY, o));
+                    labels[i].style.opacity = op.toFixed(3);
+                });
+            }
+
+            function tick() {
+                pos += (target - pos) * 0.15;
+                if (Math.abs(target - pos) < 0.0005) { pos = target; raf = null; } else { raf = requestAnimationFrame(tick); }
+                render();
+            }
+
+            const prevBtn = document.getElementById('tlPrev');
+            const nextBtn = document.getElementById('tlNext');
+
+            function stepTo(i) {
+                target = i;
+                if (!raf) raf = requestAnimationFrame(tick);
+                updateArrows();
+            }
+
+            function updateArrows() {
+                prevBtn.classList.toggle('is-disabled', target <= 0);
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (target > 0) stepTo(target - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (target >= n - 1) {
+                    document.getElementById('tekosia').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    stepTo(target + 1);
+                }
+            });
+
+            window.addEventListener('resize', measure);
+            document.fonts && document.fonts.ready.then(measure);
+            measure();
+        })();
+
+        // =========================================================================
+        // 3. REFERENSSIT: SIVUTTAINEN LIUKUSIIRTYMÄ NUOLILLA
+        // =========================================================================
+        (function () {
+            const quotes = [...document.querySelectorAll('.quote')];
+            let current = 0;
+            let isAnimating = false;
+
+            function show(next, dir = 1) {
+                if (next === current || isAnimating) return;
+                isAnimating = true;
+
+                const prevQuote = quotes[current];
+                const nextQuote = quotes[next];
+
+                // Asetetaan tuleva sitaatti aloitusasemaan ilman siirtymää
+                nextQuote.style.transition = 'none';
+                nextQuote.style.transform = `translateX(${dir > 0 ? 36 : -36}px)`;
+                nextQuote.style.opacity = '0';
+                nextQuote.classList.add('is-active');
+
+                // Pakotetaan reflow
+                void nextQuote.offsetWidth;
+
+                // Käynnistetään molempien pehmeät siirtymät nuolen suuntaisesti
+                prevQuote.style.transition = 'opacity 0.28s ease, transform 0.35s cubic-bezier(0.25, 1, 0.5, 1)';
+                prevQuote.style.transform = `translateX(${dir > 0 ? -36 : 36}px)`;
+                prevQuote.style.opacity = '0';
+
+                nextQuote.style.transition = 'opacity 0.38s ease, transform 0.42s cubic-bezier(0.16, 1, 0.3, 1)';
+                nextQuote.style.transform = 'translateX(0)';
+                nextQuote.style.opacity = '1';
+
+                setTimeout(() => {
+                    prevQuote.classList.remove('is-active');
+                    prevQuote.style.transition = '';
+                    prevQuote.style.transform = '';
+                    prevQuote.style.opacity = '';
+
+                    nextQuote.style.transition = '';
+                    nextQuote.style.transform = '';
+                    nextQuote.style.opacity = '';
+
+                    current = next;
+                    isAnimating = false;
+                }, 440);
+            }
+
+            document.getElementById('quotePrev').addEventListener('click', () => {
+                show((current - 1 + quotes.length) % quotes.length, -1);
+            });
+            document.getElementById('quoteNext').addEventListener('click', () => {
+                show((current + 1) % quotes.length, 1);
+            });
+
+            // Pyyhkäisytuki kosketuslaitteille
+            const quotesContainer = document.querySelector('.quotes');
+            if (quotesContainer) {
+                let startX = 0, startY = 0;
+                quotesContainer.addEventListener('touchstart', e => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                quotesContainer.addEventListener('touchend', e => {
+                    const dx = e.changedTouches[0].clientX - startX;
+                    const dy = e.changedTouches[0].clientY - startY;
+                    if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                        if (dx < 0) show((current + 1) % quotes.length, 1);
+                        else show((current - 1 + quotes.length) % quotes.length, -1);
+                    }
+                }, { passive: true });
+            }
+        })();
+
+        // =========================================================================
+        // 3.5. PALVELUT: SCROLL REVEAL -ANIMAATIO
+        // =========================================================================
+        (function () {
+            const grid = document.querySelector('.services-grid');
+            if (!grid) return;
+            if (!('IntersectionObserver' in window)) {
+                grid.classList.add('is-visible');
+                return;
+            }
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        grid.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            observer.observe(grid);
+        })();
+
+        // =========================================================================
+        // 4. OSIOIDEN VÄLINEN NAVIGAATIO
+        // =========================================================================
+        (function () {
+            const sections = ['stage', 'tekosia', 'palvelut', 'kontakti'].map(id => document.getElementById(id));
+            const up = document.getElementById('navUp');
+            const down = document.getElementById('navDown');
+
+            function current() {
+                let idx = 0;
+                sections.forEach((s, i) => {
+                    if (s.getBoundingClientRect().top <= window.innerHeight * 0.42) idx = i;
+                });
+                if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+                    idx = sections.length - 1;
+                }
+                return idx;
+            }
+
+            function goTo(i) {
+                if (i <= 0) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            function update() {
+                const i = current();
+                up.classList.toggle('is-hidden', i === 0);
+                down.classList.toggle('is-hidden', i === sections.length - 1);
+                up.tabIndex = i === 0 ? -1 : 0;
+                down.tabIndex = i === sections.length - 1 ? -1 : 0;
+            }
+
+            up.addEventListener('click', () => goTo(Math.max(0, current() - 1)));
+            down.addEventListener('click', () => goTo(Math.min(sections.length - 1, current() + 1)));
+
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+
+        // =========================================================================
+        // 5. YHTEYDENOTTOLOMAKE
+        // =========================================================================
+        document.getElementById('contact-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const f = new FormData(e.target);
+            const body = ['Nimi', 'Yritys', 'Sähköposti', 'Puhelin'].map(k => k + ': ' + (f.get(k) || '')).join('\n')
+                + '\n\n' + f.get('Asia');
+            location.href = 'mailto:imago@laaki.fi?subject=' + encodeURIComponent('Yhteydenotto Laakin sivuilta')
+                + '&body=' + encodeURIComponent(body);
         });
-      }
-
-      function tick() {
-        pos += (target - pos) * 0.15;
-        if (Math.abs(target - pos) < 0.0005) { pos = target; raf = null; } else { raf = requestAnimationFrame(tick); }
-        render();
-      }
-
-      // Nuolinavigaatio aikajanalle
-      const prevBtn = document.getElementById('tlPrev');
-      const nextBtn = document.getElementById('tlNext');
-      function stepTo(i) {
-        target = i;
-        if (!raf) raf = requestAnimationFrame(tick);
-        updateArrows();
-      }
-      function updateArrows() {
-        prevBtn.classList.toggle('is-disabled', target <= 0);
-      }
-      prevBtn.addEventListener('click', () => {
-        if (target > 0) stepTo(target - 1);
-      });
-      nextBtn.addEventListener('click', () => {
-        // viimeisellä kohdalla siirrytään seuraavaan osioon
-        if (target >= n - 1) document.getElementById('tekosia').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        else stepTo(target + 1);
-      });
-
-      window.addEventListener('resize', measure);
-      document.fonts && document.fonts.ready.then(measure);
-      measure();
-    })();
-
-    // Referenssit: välitön siirtymä ilman viivettä
-    (function () {
-      const quotes = [...document.querySelectorAll('.quote')];
-      let current = 0;
-
-      function show(next) {
-        if (next === current) return;
-        quotes[current].classList.remove('is-active');
-        current = next;
-        quotes[current].classList.add('is-active');
-      }
-
-      document.getElementById('quotePrev').addEventListener('click', () => show((current - 1 + quotes.length) % quotes.length));
-      document.getElementById('quoteNext').addEventListener('click', () => show((current + 1) % quotes.length));
-    })();
-
-    // Osionavigaatio: nuolet edelliseen ja seuraavaan osioon
-    (function () {
-      const sections = ['stage', 'tekosia', 'kontakti'].map(id => document.getElementById(id));
-      const up = document.getElementById('navUp');
-      const down = document.getElementById('navDown');
-
-      function current() {
-        let idx = 0;
-        sections.forEach((s, i) => { if (s.getBoundingClientRect().top <= window.innerHeight * 0.4) idx = i; });
-        // sivun aivan alalaidassa viimeinen osio on aina nykyinen
-        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = sections.length - 1;
-        return idx;
-      }
-
-      function goTo(i) {
-        if (i <= 0) window.scrollTo({ top: 0, behavior: 'smooth' });
-        else sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-
-      function update() {
-        const i = current();
-        up.classList.toggle('is-hidden', i === 0);
-        down.classList.toggle('is-hidden', i === sections.length - 1);
-        up.tabIndex = i === 0 ? -1 : 0;
-        down.tabIndex = i === sections.length - 1 ? -1 : 0;
-      }
-
-      up.addEventListener('click', () => goTo(Math.max(0, current() - 1)));
-      down.addEventListener('click', () => goTo(Math.min(sections.length - 1, current() + 1)));
-      window.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update);
-      update();
-    })();
-
-    // Yhteydenottolomake: avaa käyttäjän sähköpostiohjelman valmiiksi täytetyllä viestillä
-    document.getElementById('contact-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const f = new FormData(e.target);
-      const body = ['Nimi', 'Yritys', 'Sähköposti', 'Puhelin'].map(k => k + ': ' + (f.get(k) || '')).join('\n')
-        + '\n\n' + f.get('Asia');
-      location.href = 'mailto:imago@laaki.fi?subject=' + encodeURIComponent('Yhteydenotto Laakin sivuilta')
-        + '&body=' + encodeURIComponent(body);
-    });
-  </script>
+    </script>
 </body>
 
 </html>
