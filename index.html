@@ -23,9 +23,9 @@
             --color-paper-shadow: #1d4317;
             --color-ink: #fadecc;
             --color-ink-faint: #ffa34d;
-            --color-blue: #9db9b9;
+            --color-blue: #a2b0ae;
             --font-heading: 'Aboreto', serif;
-            --font-body: 'Raleway', sans-serif;
+            --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         *,
@@ -584,7 +584,7 @@
             transform: translateX(0);
             pointer-events: none;
             visibility: hidden;
-            will-change: transform, opacity;
+            transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .quote.is-active {
@@ -597,6 +597,10 @@
             display: flex;
             gap: 0.5rem;
             margin-top: clamp(1.5rem, 3vh, 2.5rem);
+        }
+
+        #tekosia {
+            scroll-margin-top: clamp(1.5rem, 4vh, 3rem);
         }
 
         /* --- PALVELUT --- */
@@ -630,6 +634,11 @@
             transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
                 border-color 0.3s ease;
+        }
+
+        .service-header {
+            display: flex;
+            flex-direction: column;
         }
 
         .service-col:hover {
@@ -846,16 +855,21 @@
             }
 
             .stage {
-                padding-top: clamp(4.5rem, 11vh, 6.5rem);
+                padding-top: 0;
+            }
+
+            .stage-inner {
+                padding-top: clamp(3.5rem, 8vh, 5rem);
+                justify-content: flex-start;
             }
 
             h1 {
-                font-size: 2.4rem;
+                font-size: 2.3rem;
             }
 
             .lead {
                 font-size: 1.1em;
-                line-height: 1.25;
+                line-height: 1.35;
                 font-weight: 300;
             }
 
@@ -870,7 +884,57 @@
             }
 
             .timeline {
-                height: 13rem;
+                height: 8.5rem;
+                margin-top: clamp(0.75rem, 2vh, 1.25rem);
+            }
+
+            .timeline-arrows {
+                margin: 0.5rem auto 0;
+                padding-bottom: clamp(1.2rem, 3vh, 2rem);
+            }
+
+            .tl-arrow {
+                width: 3rem;
+                height: 3rem;
+                font-size: 2.3rem;
+            }
+
+            /* Palvelut / Osaaminen tiivistys mobiilissa: ikoni ja title vierekkäin */
+            .service-col {
+                padding-top: 1.1rem;
+            }
+
+            .services-grid {
+                gap: 1.6rem;
+                margin-top: 1rem;
+            }
+
+            .service-header {
+                flex-direction: row;
+                align-items: center;
+                gap: 0.85rem;
+                margin-bottom: 0.45rem;
+            }
+
+            .service-header .service-icon {
+                margin-bottom: 0;
+                width: 1.75rem;
+                height: 1.75rem;
+            }
+
+            .service-header .service-title {
+                margin-bottom: 0;
+                font-size: 1.25rem;
+            }
+
+            .service-desc {
+                margin-bottom: 0.75rem;
+                font-size: 0.92rem;
+            }
+
+            .service-list {
+                gap: 0.25rem;
+                font-size: 0.85rem;
             }
 
             .contact {
@@ -1105,12 +1169,14 @@
         <h2 id="palvelut-h">Osaaminen</h2>
         <div class="services-grid">
             <div class="service-col">
-                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="4" y="4" width="14" height="14" rx="2" />
-                    <circle cx="17" cy="17" r="7" />
-                </svg>
-                <h3 class="service-title">Suunnittelu</h3>
+                <div class="service-header">
+                    <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="4" y="4" width="14" height="14" rx="2" />
+                        <circle cx="17" cy="17" r="7" />
+                    </svg>
+                    <h3 class="service-title">Suunnittelu</h3>
+                </div>
                 <p class="service-desc">
                     Vaikuttavaa viestintää kaikkiin kanaviin ja kohtaamisiin.
                 </p>
@@ -1122,16 +1188,18 @@
             </div>
 
             <div class="service-col">
-                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="3" y="5" width="22" height="18" rx="2" />
-                    <line x1="3" y1="10" x2="25" y2="10" />
-                    <circle cx="6.5" cy="7.5" r="0.75" fill="currentColor" />
-                    <circle cx="9.5" cy="7.5" r="0.75" fill="currentColor" />
-                    <line x1="8" y1="15" x2="14" y2="15" />
-                    <line x1="8" y1="18" x2="20" y2="18" />
-                </svg>
-                <h3 class="service-title">Toteutus</h3>
+                <div class="service-header">
+                    <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="5" width="22" height="18" rx="2" />
+                        <line x1="3" y1="10" x2="25" y2="10" />
+                        <circle cx="6.5" cy="7.5" r="0.75" fill="currentColor" />
+                        <circle cx="9.5" cy="7.5" r="0.75" fill="currentColor" />
+                        <line x1="8" y1="15" x2="14" y2="15" />
+                        <line x1="8" y1="18" x2="20" y2="18" />
+                    </svg>
+                    <h3 class="service-title">Toteutus</h3>
+                </div>
                 <p class="service-desc">
                     Ketterät ja helppokäyttöiset sivustot edullisesti.
                 </p>
@@ -1143,14 +1211,16 @@
             </div>
 
             <div class="service-col">
-                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polygon points="14,3 24,8.5 24,19.5 14,25 4,19.5 4,8.5" />
-                    <line x1="14" y1="3" x2="14" y2="25" />
-                    <line x1="14" y1="14" x2="24" y2="8.5" />
-                    <line x1="14" y1="14" x2="4" y2="8.5" />
-                </svg>
-                <h3 class="service-title">Hankinnat</h3>
+                <div class="service-header">
+                    <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polygon points="14,3 24,8.5 24,19.5 14,25 4,19.5 4,8.5" />
+                        <line x1="14" y1="3" x2="14" y2="25" />
+                        <line x1="14" y1="14" x2="24" y2="8.5" />
+                        <line x1="14" y1="14" x2="4" y2="8.5" />
+                    </svg>
+                    <h3 class="service-title">Hankinnat</h3>
+                </div>
                 <p class="service-desc">
                     Varmuutta laajoihin verkko- ja sovellusprojekteihin.
                 </p>
@@ -1162,12 +1232,14 @@
             </div>
 
             <div class="service-col">
-                <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="14" cy="14" r="10" stroke-dasharray="2 2" opacity="0.5" />
-                    <polygon points="14,4 16.5,11.5 24,14 16.5,16.5 14,24 11.5,16.5 4,14 11.5,11.5" />
-                </svg>
-                <h3 class="service-title">Strategia</h3>
+                <div class="service-header">
+                    <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="14" cy="14" r="10" stroke-dasharray="2 2" opacity="0.5" />
+                        <polygon points="14,4 16.5,11.5 24,14 16.5,16.5 14,24 11.5,16.5 4,14 11.5,11.5" />
+                    </svg>
+                    <h3 class="service-title">Strategia</h3>
+                </div>
                 <p class="service-desc">
                     Kirkastetut visiot ja selkeät askelmerkit muutokseen.
                 </p>
