@@ -18,12 +18,12 @@
     <style>
         :root {
             /* Lämmin, luonnollinen paperipaletti */
-            --color-paper: #001a20;
-            --color-paper-warm: #0d3e21;
-            --color-paper-shadow: #1d4317;
+            --color-paper: #000812;
+            --color-paper-warm: #062a34;
+            --color-paper-shadow: #0b182d;
             --color-ink: #fadecc;
-            --color-ink-faint: #ffa34d;
-            --color-blue: #a2b0ae;
+            --color-ink-faint: #ff9a47;
+            --color-blue: #7baeb9;
             --font-heading: 'Aboreto', serif;
             --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
@@ -72,10 +72,10 @@
             pointer-events: none;
             z-index: 0;
             background: radial-gradient(circle at 35% 25%,
-                    rgba(252, 114, 1, 0.5) 0%,
-                    rgba(38, 0, 7, 0.6) 45%,
-                    rgba(7, 1, 33, 0.85) 85%,
-                    rgba(3, 15, 77, 0.6) 100%);
+                    rgba(0, 101, 116, 0.5) 0%,
+                    rgba(0, 24, 38, 0.6) 45%,
+                    rgba(1, 28, 33, 0.85) 85%,
+                    rgba(1, 11, 21, 0.6) 100%);
             filter: blur(40px);
             animation: daylightDrift 28s ease-in-out infinite alternate;
             will-change: transform;
@@ -100,7 +100,7 @@
             inset: 0;
             pointer-events: none;
             z-index: 0;
-            background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(65, 50, 30, 0.075) 100%);
+            background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(2, 5, 15, 0.8) 100%);
         }
 
         /* --- 2. PERGOLAN PAKSUT MONITASOISET PARALLAX-VARJOT --- */
@@ -155,25 +155,25 @@
         .p1-bar {
             height: 520px;
             margin-bottom: 540px;
-            background: rgba(0, 181, 187, 0.2);
+            background: rgba(0, 76, 109, 0.2);
         }
 
         .p2-bar {
             height: 360px;
             margin-bottom: 400px;
-            background: rgba(1, 15, 54, 0.24);
+            background: rgba(1, 31, 54, 0.291);
         }
 
         .p3-bar {
             height: 460px;
             margin-bottom: 720px;
-            background: rgba(9, 23, 59, 0.22);
+            background: rgba(3, 39, 47, 0.297);
         }
 
         .p4-bar {
             height: 280px;
             margin-bottom: 660px;
-            background: rgba(1, 157, 224, 0.15);
+            background: rgba(0, 21, 38, 0.193);
         }
 
         /* --- 3. AURINGONVALON SATUNNAISET PÖLYHIUKKASET (SUNLIGHT DUST MOTES) --- */
@@ -184,7 +184,7 @@
             height: 100vh;
             pointer-events: none;
             z-index: 2;
-            opacity: .35;
+            opacity: .5;
         }
 
         /* --- 4. VAHVA ELÄVÄ PAPERIKUITU & GRAIN (LIVING GRAIN) --- */
@@ -685,7 +685,7 @@
             font-weight: 400;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--color-ink);
+            color: var(--color-blue);
             margin-bottom: 0.75rem;
             line-height: 1.35;
         }
@@ -777,7 +777,7 @@
         .contact-form input,
         .contact-form textarea {
             width: 100%;
-            background: rgba(12, 6, 15, 0.25);
+            background: rgba(5, 10, 22, 0.25);
             border: 0px solid rgba(0, 0, 0, 0.28);
             border-radius: 0;
             padding: 0.9rem 1rem;
@@ -800,7 +800,7 @@
         .contact-form input:focus,
         .contact-form textarea:focus {
             outline: none;
-            background: rgba(255, 137, 3, 0.1);
+            background: rgba(3, 209, 255, 0.076);
         }
 
         .form-submit {
@@ -855,11 +855,16 @@
             }
 
             .stage {
-                padding-top: clamp(4.5rem, 11vh, 6.5rem);
+                padding-top: 0;
+            }
+
+            .stage-inner {
+                padding-top: clamp(3.5rem, 8vh, 5rem);
+                justify-content: flex-start;
             }
 
             h1 {
-                font-size: 2.4rem;
+                font-size: 2.3rem;
             }
 
             .lead {
@@ -879,11 +884,19 @@
             }
 
             .timeline {
-                height: 10.5rem;
+                height: 8.5rem;
+                margin-top: clamp(0.75rem, 2vh, 1.25rem);
             }
 
             .timeline-arrows {
-                margin: 0.75rem auto 0;
+                margin: 0.5rem auto 0;
+                padding-bottom: clamp(1.2rem, 3vh, 2rem);
+            }
+
+            .tl-arrow {
+                width: 3rem;
+                height: 3rem;
+                font-size: 2.3rem;
             }
 
             /* Palvelut / Osaaminen tiivistys mobiilissa: ikoni ja title vierekkäin */
@@ -1011,11 +1024,10 @@
                 <div class="timeline-line"></div>
                 <ol class="timeline-track" id="track">
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Kaikki alkoi 2009</span><span class="tl-desc">Pieni
+                                    class="tl-title">Hello world 2009</span><span class="tl-desc">Pieni
                                     suunnittelutoimisto vilahtaa
                                     Aamulehdessä.
-                                    Asiakkaat
-                                    haluavat lehtimainoksia ja printtiä.</span></span></span></li>
+                                    Asiakkaat tilaavat lehtimainoksia ja bannereita.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
                                     class="tl-title">Alustat ja verkkokaupat</span><span class="tl-desc">Asiakkuudet
                                     syvenevät ja
