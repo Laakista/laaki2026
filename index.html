@@ -23,6 +23,7 @@
             --color-paper-shadow: #1d4317;
             --color-ink: #fadecc;
             --color-ink-faint: #ffa34d;
+            --color-blue: #9db9b9;
             --font-heading: 'Aboreto', serif;
             --font-body: 'Raleway', sans-serif;
         }
@@ -491,7 +492,7 @@
             font-weight: 300;
             line-height: 1.5;
             letter-spacing: 0.03em;
-            color: var(--color-ink);
+            color: var(--color-blue);
         }
 
         .timeline-arrows {
@@ -621,15 +622,14 @@
         }
 
         .service-col {
-            border-top: 1px solid rgba(250, 222, 204, 0.16);
             padding-top: 1.5rem;
             display: flex;
             flex-direction: column;
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.3s ease;
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease;
         }
 
         .service-col:hover {
@@ -641,15 +641,26 @@
             transform: translateY(0);
         }
 
-        .services-grid.is-visible .service-col:nth-child(1) { transition-delay: 0.05s; }
-        .services-grid.is-visible .service-col:nth-child(2) { transition-delay: 0.15s; }
-        .services-grid.is-visible .service-col:nth-child(3) { transition-delay: 0.25s; }
-        .services-grid.is-visible .service-col:nth-child(4) { transition-delay: 0.35s; }
+        .services-grid.is-visible .service-col:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+
+        .services-grid.is-visible .service-col:nth-child(2) {
+            transition-delay: 0.15s;
+        }
+
+        .services-grid.is-visible .service-col:nth-child(3) {
+            transition-delay: 0.25s;
+        }
+
+        .services-grid.is-visible .service-col:nth-child(4) {
+            transition-delay: 0.35s;
+        }
 
         .service-icon {
             width: 2rem;
             height: 2rem;
-            color: var(--color-ink-faint);
+            color: var(--color-blue);
             margin-bottom: 1.25rem;
             flex-shrink: 0;
             transition: transform 0.3s ease, color 0.3s ease;
@@ -661,7 +672,7 @@
 
         .service-title {
             font-family: var(--font-heading);
-            font-size: 1.05rem;
+            font-size: 1.4rem;
             font-weight: 400;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -720,9 +731,9 @@
 
         .quote figcaption {
             margin-top: 1.2rem;
-            font-size: 0.95rem;
+            font-size: 1.2rem;
             letter-spacing: 0.06em;
-            color: var(--color-ink-faint);
+            color: var(--color-blue);
         }
 
         .contact-info {
@@ -757,7 +768,7 @@
         .contact-form input,
         .contact-form textarea {
             width: 100%;
-            background: rgba(27, 4, 18, 0.25);
+            background: rgba(12, 6, 15, 0.25);
             border: 0px solid rgba(0, 0, 0, 0.28);
             border-radius: 0;
             padding: 0.9rem 1rem;
@@ -821,7 +832,7 @@
         .disclaimer {
             font-size: 0.88rem;
             line-height: 1.7;
-            color: var(--color-ink);
+            color: var(--color-blue);
             letter-spacing: 0.03em;
             font-weight: 300;
         }
@@ -1091,7 +1102,7 @@
     </section>
 
     <section class="block" id="palvelut" aria-labelledby="palvelut-h">
-        <h2 id="palvelut-h">Palvelut</h2>
+        <h2 id="palvelut-h">Osaaminen</h2>
         <div class="services-grid">
             <div class="service-col">
                 <svg class="service-icon" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.25"
@@ -1099,14 +1110,14 @@
                     <rect x="4" y="4" width="14" height="14" rx="2" />
                     <circle cx="17" cy="17" r="7" />
                 </svg>
-                <h3 class="service-title">Visuaalisuus &amp; brändi</h3>
+                <h3 class="service-title">Suunnittelu</h3>
                 <p class="service-desc">
-                    Tunnistettava ja pitkäikäinen ilme, joka erottuu edukseen ja kantaa kaikissa kanavissa.
+                    Vaikuttavaa viestintää kaikkiin kanaviin ja kohtaamisiin.
                 </p>
                 <ul class="service-list">
-                    <li>Yritysilmeet &amp; brändi-identiteetit</li>
-                    <li>UI- &amp; käyttöliittymäsuunnittelu</li>
-                    <li>Julkaisut, pakkaukset &amp; opasteet</li>
+                    <li>Yritysilmeet &amp; brändityö</li>
+                    <li>UI, UX &amp; rakenteet</li>
+                    <li>Digi, printti &amp; irl</li>
                 </ul>
             </div>
 
@@ -1120,14 +1131,14 @@
                     <line x1="8" y1="15" x2="14" y2="15" />
                     <line x1="8" y1="18" x2="20" y2="18" />
                 </svg>
-                <h3 class="service-title">Verkkototeutukset</h3>
+                <h3 class="service-title">Toteutus</h3>
                 <p class="service-desc">
-                    Ketterät, nopeat ja helposti ylläpidettävät sivustot ilman turhaa teknistä painolastia.
+                    Ketterät ja helppokäyttöiset sivustot edullisesti.
                 </p>
                 <ul class="service-list">
-                    <li>Kevyet esittely- &amp; yrityssivustot</li>
-                    <li>Kampanjat &amp; laskeutumissivut</li>
-                    <li>Selkeät verkkokaupat &amp; asiointialustat</li>
+                    <li>Kevyet sivustot</li>
+                    <li>Kampanjat &amp; ländärit</li>
+                    <li>Verkkokaupat</li>
                 </ul>
             </div>
 
@@ -1139,14 +1150,14 @@
                     <line x1="14" y1="14" x2="24" y2="8.5" />
                     <line x1="14" y1="14" x2="4" y2="8.5" />
                 </svg>
-                <h3 class="service-title">Hankinta &amp; ohjaus</h3>
+                <h3 class="service-title">Hankinnat</h3>
                 <p class="service-desc">
-                    Riippumaton ostajan asiantuntija. Varmistetaan, että laaja verkkoprojekti tai sovellus vastaa todellista tarvetta.
+                    Varmuutta laajoihin verkko- ja sovellusprojekteihin.
                 </p>
                 <ul class="service-list">
-                    <li>Vaatimusmäärittelyt &amp; hankintatuki</li>
-                    <li>Monimutkaisten sovellusten ohjaus</li>
-                    <li>Arkkitehtuuri &amp; toimittajavalinnat</li>
+                    <li>Kartoitus &amp; määrittely</li>
+                    <li>Hankintatuki &amp; ohjaus</li>
+                    <li>Tekijät &amp; roolitukset</li>
                 </ul>
             </div>
 
@@ -1156,14 +1167,14 @@
                     <circle cx="14" cy="14" r="10" stroke-dasharray="2 2" opacity="0.5" />
                     <polygon points="14,4 16.5,11.5 24,14 16.5,16.5 14,24 11.5,16.5 4,14 11.5,11.5" />
                 </svg>
-                <h3 class="service-title">Strategia &amp; muutos</h3>
+                <h3 class="service-title">Strategia</h3>
                 <p class="service-desc">
-                    Selkeä suunta ja käytännölliset mallit silloin, kun toimintaympäristö, liiketoiminta tai viestintä muuttuu.
+                    Kirkastetut visiot ja selkeät askelmerkit muutokseen.
                 </p>
                 <ul class="service-list">
-                    <li>Strateginen sparraus &amp; konseptit</li>
-                    <li>Muutosjohtaminen &amp; työpajat</li>
-                    <li>Toimintamallien &amp; viestinnän kirkastus</li>
+                    <li>Viestinnälliset pelikirjat</li>
+                    <li>Rakenteita &amp; työkaluja</li>
+                    <li>Sitoutus &amp; työkalut</li>
                 </ul>
             </div>
         </div>
