@@ -14,16 +14,19 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Aboreto&family=Raleway:ital,wght@0,300;0,400;1,300&display=swap"
         rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
             /* Lämmin, luonnollinen paperipaletti */
-            --color-paper: #000000;
+            --color-paper: #eae1d9;
             --color-paper-warm: #080a0a;
             --color-paper-shadow: #060a10;
-            --color-ink: #fbe9de;
-            --color-ink-faint: #fc8641;
-            --color-blue: #916a5a;
+            --color-ink: #ffffff;
+            --color-ink-faint: #d7a8e7;
+            --color-blue: #9fd9e4;
             --font-heading: 'Aboreto', serif;
             --font-body: 'Raleway', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
@@ -72,10 +75,10 @@
             pointer-events: none;
             z-index: 0;
             background: radial-gradient(circle at 35% 25%,
-                    rgba(14, 13, 13, 0.632) 0%,
-                    rgba(10, 9, 8, 0.6) 45%,
-                    rgba(20, 16, 13, 0.85) 85%,
-                    rgba(0, 0, 0, 0.627) 100%);
+                    rgba(76, 37, 97, 0.85) 0%,
+                    rgba(5, 97, 120, 0.6) 45%,
+                    rgba(6, 129, 106, 0.85) 85%,
+                    rgba(33, 147, 195, 0.627) 100%);
             filter: blur(40px);
             animation: daylightDrift 28s ease-in-out infinite alternate;
             will-change: transform;
@@ -155,25 +158,25 @@
         .p1-bar {
             height: 520px;
             margin-bottom: 540px;
-            background: rgba(29, 17, 6, 0.442);
+            background: rgba(18, 17, 16, 0.442);
         }
 
         .p2-bar {
             height: 360px;
             margin-bottom: 400px;
-            background: rgba(37, 26, 16, 0.626);
+            background: rgba(10, 9, 9, 0.626);
         }
 
         .p3-bar {
             height: 460px;
             margin-bottom: 720px;
-            background: rgba(23, 11, 5, 0.594);
+            background: rgba(12, 11, 11, 0.594);
         }
 
         .p4-bar {
             height: 280px;
             margin-bottom: 660px;
-            background: rgba(108, 49, 7, 0.638);
+            background: rgba(29, 27, 25, 0.638);
         }
 
         /* --- 3. AURINGONVALON SATUNNAISET PÖLYHIUKKASET (SUNLIGHT DUST MOTES) --- */
@@ -382,10 +385,22 @@
         }
 
         .lead {
-            font-size: 1.2em;
+            font-size: 1.5em;
             line-height: 1.75;
-            font-weight: 300;
+            font-weight: 4 00;
+            font-family: 'cormorant garamond';
             color: var(--color-ink);
+            letter-spacing: 0.025em;
+            max-width: 900px;
+        }
+
+        .lead span {
+            font-size: 1em;
+            line-height: 1.75;
+            font-weight: 700;
+            font-family: 'cormorant garamond';
+            font-style: italic;
+            color: var(--color-blue);
             letter-spacing: 0.025em;
             max-width: 900px;
         }
@@ -466,10 +481,11 @@
             top: 2.5rem;
             left: 0;
             white-space: nowrap;
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-family: 'cormoran garamond';
+            font-size: 1.4rem;
+            font-weight: 400;
             line-height: 1.4;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.15em;
             opacity: 0;
             will-change: opacity;
             display: flex;
@@ -487,12 +503,13 @@
 
         .tl-desc {
             display: block;
-            margin-top: 0.15rem;
+            margin-top: 0.5rem;
+            font-family: var(--font-body);
             font-size: 0.95rem;
             font-weight: 300;
             line-height: 1.5;
             letter-spacing: 0.03em;
-            color: var(--color-blue);
+            color: var(--color-ink);
         }
 
         .timeline-arrows {
@@ -680,11 +697,9 @@
         }
 
         .service-title {
-            font-family: var(--font-heading);
-            font-size: 1.4rem;
+            font-family: 'cormorant garamond';
+            font-size: 2rem;
             font-weight: 400;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
             color: var(--color-blue);
             margin-bottom: 0.75rem;
             line-height: 1.35;
@@ -800,7 +815,7 @@
         .contact-form input:focus,
         .contact-form textarea:focus {
             outline: none;
-            background: rgba(255, 79, 3, 0.076);
+            background: rgba(3, 242, 255, 0.076);
         }
 
         .form-submit {
@@ -851,14 +866,6 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.65rem;
-            }
-            .section-nav {
-                display: none;
-            }
-            
-
-            .ambient-vignette {
-                display: none;
             }
 
             .stage {
@@ -1009,50 +1016,43 @@
             <main>
                 <h1>Tiedä &amp; mene</h1>
                 <p class="lead" id="lead">
-                    Laaki on hyvä kaveri muuttuvassa maailmassa. Yrityksen koko pitkä historia on tarina mukautumisesta
-                    erilaisten toimijoiden kohtaamiin pulmiin ja mahdollisuuksiin. Mikään ei inspiroi niin kuin
-                    kunnon haaste.
+                    Laaki on hyvä kaveri muuttuvassa maailmassa. Yrityksen koko historia on tarina mukautumisesta
+                    asiakkaiden kohtaamiin pulmiin ja mahdollisuuksiin. <span>Mikään ei inspiroi niin kuin
+                        kunnon haaste.</span>
                 </p>
             </main>
             <div class="timeline" aria-label="Palvelun vaiheet">
                 <div class="timeline-line"></div>
                 <ol class="timeline-track" id="track">
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Hello world 2009</span><span class="tl-desc">Pieni
-                                    suunnittelutoimisto vilahtaa
-                                    Aamulehdessä.
-                                    Asiakkaat tilaavat lehtimainoksia ja bannereita.</span></span></span></li>
+                                    class="tl-title">2009</span><span class="tl-desc">Pieni
+                                    suunnittelutoimisto alkaa tarjoamaan kevyitä
+                                    mainostoimistopalveluita.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Alustat ja verkkokaupat</span><span class="tl-desc">Asiakkuudet
-                                    syvenevät ja
-                                    puskaradio soi. Maailma siirtyy enenevissä määrin nettiin.</span></span></span></li>
+                                    class="tl-title">2010</span><span class="tl-desc">Työ suurten valtakunnallisten ja
+                                    kansainvälisten brändien parissa alkaa.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Väkeviä brändejä</span><span class="tl-desc">Asiakkaat saavat
-                                    kokonaisvaltaisempia
-                                    työkaluja
-                                    maailman valloitukseen ja viestinnän hallintaan.</span></span></span></li>
+                                    class="tl-title">2013</span><span class="tl-desc">Uudet toimitilat, reaktiivista
+                                    viestintästrategiaa ja suurempia tuotantoja.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Tapahtumat ja tuotannot</span><span
-                                    class="tl-desc">Digitalisoituvassa maailmassa on
-                                    tilausta
-                                    myös vaikuttaville fyysisille kohtaamisille ja videoille.</span></span></span></li>
+                                    class="tl-title">2016</span><span class="tl-desc">Uniikkeja konsepteja, älykkäämpiä
+                                    järjestelmiä ja sovelluskehitystä.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Strategia korostuu</span><span class="tl-desc">Kriisit ja koronat
+                                    class="tl-title">2019</span><span class="tl-desc">Kriisit ja koronat
                                     käännetään
                                     kilpailueduksi ja tulevaisuus otetaan omiin käsiin.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Yhteiskunnallinen vaikuttavuus</span><span
-                                    class="tl-desc">Markkinatalouden
-                                    mekanismit
-                                    valjastetaan positiivisen muutoksen palvelukseen.</span></span></span></li>
+                                    class="tl-title">2021</span><span class="tl-desc">Markkinatalouden
+                                    mekanismeja aletaan
+                                    valjastaa yhteisen hyvän palvelukseen.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Vuorovaikutus ja automaatio</span><span
-                                    class="tl-desc">Nykyaikaisten työkalujen ja
-                                    toimintamallien avulla voidaan säästää paljon aikaa, rahaa ja
+                                    class="tl-title">2024</span><span class="tl-desc">Vastuullisen tekoälyn ja
+                                    automaation avulla säästetään aikaa, rahaa ja
                                     hermoja.</span></span></span></li>
                     <li class="tl-item"><span class="tl-dot"></span><span class="tl-label"><span class="tl-text"><span
-                                    class="tl-title">Haaste = mahdollisuus</span><span class="tl-desc">Ota yhteyttä kun
-                                    haluat kokemusta ja näkemystä muutoksen hallintaan.</span></span></span></li>
+                                    class="tl-title">2026</span><span class="tl-desc">Toimintaympäristöt ja
+                                    markkinalogiikka ovat murroksessa. Kuka kesyttää villin lännen?</span></span></span>
+                    </li>
                 </ol>
             </div>
             <div class="timeline-arrows">
